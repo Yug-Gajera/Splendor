@@ -9,6 +9,20 @@ Open `index.html` in any modern browser. No build step, no dependencies, no serv
 The only network request is the Google Fonts stylesheet; the game runs fine offline
 with fallback type.
 
+### On a phone
+
+Publish it with GitHub Pages and play from the Home Screen:
+
+1. **Settings → Pages** in this repository
+2. Source **Deploy from a branch**, branch `master`, folder `/ (root)`, **Save**
+3. After a minute it is live at <https://yug-gajera.github.io/Splendor/>
+4. On iPhone, open that in Safari → **Share → Add to Home Screen**. It launches
+   full-screen with no browser chrome, using the bundled icon.
+
+The layout, tap targets and safe-area insets are built for a 390 px phone screen,
+and verified against an emulated iPhone: no horizontal scrolling, taps drive every
+action, and the sticky header clears the status bar.
+
 ## Rules implemented
 
 Everything in the base game:
@@ -53,7 +67,13 @@ setup.
 
 ## Layout
 
-    index.html    the whole game: styles, rules engine, bot, and UI
+    index.html              the whole game: styles, rules engine, bot, and UI
+    manifest.webmanifest    Home Screen name, colours and display mode
+    apple-touch-icon.png    180x180 Home Screen icon
+
+`index.html` is a complete standalone document, so it works from GitHub Pages, a file
+on disk, or any static host. The copy published as a Claude artifact is the same file
+with its `<head>`/`<body>` shell stripped, since that platform supplies its own.
 
 Verified with headless runs of 2-, 3-, and 4-player games: gem and card totals are
 conserved every turn, the hand limit and reserve limit always hold, and every game

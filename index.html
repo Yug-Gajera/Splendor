@@ -1,3 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Splendor">
+<meta name="theme-color" content="#F2EDE3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1220" media="(prefers-color-scheme: dark)">
+<meta name="description" content="The full Splendor board game: 2 to 4 players, bots included, playable in the browser.">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Splendor</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +65,7 @@
 }
 
 *{box-sizing:border-box}
+button{-webkit-tap-highlight-color:transparent; touch-action:manipulation}
 [hidden]{display:none !important}
 body{
   background:
@@ -63,7 +79,7 @@ body{
   max-width:1420px; margin:0 auto;
   padding-left:max(16px, env(safe-area-inset-left, 0px));
   padding-right:max(16px, env(safe-area-inset-right, 0px));
-  padding-block:0 40px;
+  padding-block:0 calc(40px + env(safe-area-inset-bottom, 0px));
 }
 h1,h2,h3{font-family:var(--display); font-weight:400; text-wrap:balance; margin:0}
 button{font:inherit; color:inherit; cursor:pointer}
@@ -75,8 +91,22 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .topbar{
   position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
   display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  padding-block:12px; margin-bottom:14px;
-  background:linear-gradient(var(--bg) 70%, transparent);
+  margin-bottom:14px;
+  /* full-bleed band: solid, so the board never shows through behind it */
+  margin-left:calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  margin-right:calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:11px;
+  background:var(--bg);
+  box-shadow:0 1px 0 var(--line), 0 12px 16px -16px rgba(0,0,0,.55);
+}
+@media (max-width:540px){
+  .topbar{gap:9px; padding-block:9px}
+  .brand-name{font-size:20px}
+  .brand-sub{font-size:11px}
+  .mark{width:21px; height:21px}
+  .topbar .btn{padding:6px 11px; font-size:12.5px}
 }
 .brand{display:flex; align-items:center; gap:10px; min-width:0}
 .mark{width:26px; height:26px; flex:none; transform:rotate(45deg); border-radius:4px;
@@ -319,6 +349,8 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important} }
 </style>
 
+</head>
+<body>
 <div class="wrap">
   <header class="topbar">
     <div class="brand">
@@ -1268,3 +1300,6 @@ if(window.claude && window.claude.hot){
   start({});
 }
 </script>
+
+</body>
+</html>

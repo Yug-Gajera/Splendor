@@ -1,0 +1,14 @@
+{
+  "name": "Splendor",
+  "short_name": "Splendor",
+  "description": "The full Splendor board game: 2 to 4 players, bots included.",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#0F1220",
+  "theme_color": "#0F1220",
+  "icons": [
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
