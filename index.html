@@ -115,6 +115,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .brand-name{font-family:var(--display); font-size:26px; letter-spacing:.055em; text-transform:uppercase; line-height:1}
 .brand-sub{color:var(--ink-faint); font-size:12.5px; letter-spacing:.04em}
 .topbar .spacer{flex:1}
+.topbar-actions{display:flex; gap:8px; flex-wrap:wrap}
 .btn{
   border:1px solid var(--line-strong); background:var(--surface); color:var(--ink);
   padding:8px 14px; border-radius:999px; font-size:13.5px; letter-spacing:.02em;
@@ -213,7 +214,8 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .deck:not([disabled]):hover{transform:translateY(-2px); border-color:var(--gold)}
 .deck .lvl{font-family:var(--display); font-size:17px; line-height:1; color:var(--ink)}
 .deck .cnt{font-size:10.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums}
-.deck[disabled]{opacity:.45; cursor:not-allowed}
+.deck[disabled]{cursor:default}
+.deck.dim{opacity:.45}
 
 .slot{min-width:0; position:relative; display:flex}
 .slot.empty{border:1px dashed var(--line); border-radius:10px; min-height:118px}
@@ -225,8 +227,6 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 }
 .card{height:100%; min-height:134px}
 .card:hover{transform:translateY(-3px); box-shadow:var(--shadow-2)}
-.card.enter{animation:deal .34s cubic-bezier(.2,.8,.3,1) both}
-@keyframes deal{from{opacity:0; transform:translateY(-10px) scale(.96)}}
 .card.buyable{border-color:var(--gold-bright); box-shadow:0 0 0 2px color-mix(in srgb, var(--gold-bright) 30%, transparent), var(--shadow-1)}
 .card.sel{border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 55%, transparent), var(--shadow-2); transform:translateY(-3px)}
 .card .crown{
@@ -262,7 +262,8 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
   background:none; border:0; padding:3px; border-radius:10px; transition:transform .13s, background .13s;
 }
 .tokbtn:not([disabled]):hover{transform:translateY(-3px); background:var(--surface-2)}
-.tokbtn[disabled]{opacity:.32; cursor:not-allowed}
+.tokbtn[disabled]{cursor:default}
+.tokbtn.dim{opacity:.32}
 .tokbtn .n{font-size:11.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums; letter-spacing:.03em}
 .tokbtn.picked .chip{box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 60%, transparent), var(--shadow-1)}
 .tray{margin-top:12px; padding-top:11px; border-top:1px solid var(--line); display:flex; align-items:center; gap:9px; flex-wrap:wrap}
@@ -308,7 +309,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .log .t{color:var(--ink-faint); font-variant-numeric:tabular-nums; font-size:11px; flex:none; width:22px; text-align:right}
 .log .msg{min-width:0}
 .log b{color:var(--ink); font-weight:600}
-.log .inline{display:inline-flex; gap:2px; vertical-align:-3px; margin:0 2px}
+.inline{display:inline-flex; gap:2px; vertical-align:-3px; margin:0 2px}
 
 /* ── overlays ──────────────────────────────── */
 .overlay{position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:18px;
@@ -346,6 +347,34 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .stand .sc{font-family:var(--display); font-size:22px}
 .stand .de{font-size:11.5px; color:var(--ink-faint)}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)}
+/* ── motion ──────────────────────────────── */
+.fx{position:fixed; inset:0; pointer-events:none; z-index:45; overflow:hidden}
+.fx-item{position:absolute; will-change:transform, opacity}
+.fx-item > .chip{width:100%; height:100%;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ce) 80%, transparent), inset 0 -2px 5px color-mix(in srgb, var(--ce) 65%, transparent),
+             inset 0 2px 3px rgba(255,255,255,.3), 0 10px 18px -6px rgba(0,0,0,.45)}
+.fx-item > .card{width:100%; height:100%; min-height:0; box-shadow:0 18px 34px -12px rgba(0,0,0,.5)}
+.fx-item > .noble{width:100%; height:100%; box-shadow:0 18px 34px -12px rgba(0,0,0,.5)}
+.fx-back, .fx-cardback{position:absolute; inset:0; border-radius:10px; border:1px solid var(--line-strong);
+  background:repeating-linear-gradient(135deg, color-mix(in srgb, var(--garnet) 16%, transparent) 0 6px, transparent 6px 12px),
+             linear-gradient(160deg, var(--surface-3), var(--surface-2))}
+.fx-cardback{box-shadow:0 18px 34px -12px rgba(0,0,0,.5)}
+
+/* a bot's intent is garnet, so it never reads as your own gold selection */
+.card.intent{transform:translateY(-7px) scale(1.035); border-color:var(--garnet); animation:intent 1.1s ease-in-out infinite}
+.tokbtn.intent{transform:translateY(-6px)}
+.tokbtn.intent .chip, .deck.intent, .minicard.intent{animation:intent 1.1s ease-in-out infinite}
+.deck.intent, .minicard.intent{border-color:var(--garnet)}
+@keyframes intent{
+  0%,100%{box-shadow:0 0 0 3px color-mix(in srgb, var(--garnet) 50%, transparent), var(--shadow-2)}
+  50%{box-shadow:0 0 0 7px color-mix(in srgb, var(--garnet) 16%, transparent), var(--shadow-2)}
+}
+.unpick{background:none; border:0; padding:0; border-radius:50%; line-height:0}
+.unpick .chip{transition:transform .12s}
+.unpick:hover .chip{transform:translateY(-2px)}
+.none{font-size:11.5px; color:var(--ink-faint)}
+.pl-grid:empty{display:none}
+.pl-res:empty{margin-top:0}
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important} }
 </style>
 
@@ -362,6 +391,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
     </div>
     <span class="spacer"></span>
     <div class="topbar-actions">
+      <button class="btn" id="btn-pace" title="Speed of the animations and of bot turns">Measured pace</button>
       <button class="btn" id="btn-rules">Rules</button>
       <button class="btn" id="btn-new">New game</button>
     </div>
@@ -382,11 +412,11 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
     <div class="field-label">Seats</div>
     <div class="seats" id="seats"></div>
 
-    <div class="field-label" style="margin-top:18px">Pace of the bots</div>
-    <div class="seg" id="speed-seg" role="group" aria-label="Bot speed">
-      <button type="button" data-ms="320" aria-pressed="false">Brisk</button>
-      <button type="button" data-ms="750" aria-pressed="true">Measured</button>
-      <button type="button" data-ms="1400" aria-pressed="false">Deliberate</button>
+    <div class="field-label" style="margin-top:18px">Pace of play</div>
+    <div class="seg" id="speed-seg" role="group" aria-label="Pace of play">
+      <button type="button" data-speed="brisk" aria-pressed="false">Brisk</button>
+      <button type="button" data-speed="measured" aria-pressed="true">Measured</button>
+      <button type="button" data-speed="deliberate" aria-pressed="false">Deliberate</button>
     </div>
 
     <div style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap">
@@ -556,7 +586,19 @@ function buildDecks(){
 }
 
 let S = null;                 /* game state */
-let UI = { selCard:null, pick:[], seen:new Set(), botTimer:null, botMs:750 };
+const SPEEDS = {
+  brisk:      { label:'Brisk',      think:260, f:0.6  },
+  measured:   { label:'Measured',   think:480, f:1    },
+  deliberate: { label:'Deliberate', think:900, f:1.45 }
+};
+const UI = { selCard:null, pick:[], seen:new Set(), botTimer:null, speed:'measured',
+             busy:false, caption:'', lastCaption:'', intent:null, pops:[], bankPops:[], lastPts:{}, lastCur:-1 };
+const REDUCED = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const INSTANT = () => window.SPLENDOR_INSTANT === true;          /* test hook: skip all motion */
+const F = () => (REDUCED || INSTANT()) ? 0 : SPEEDS[UI.speed].f;  /* motion scale; 0 = none */
+const wait = ms => INSTANT() ? Promise.resolve() : new Promise(r => setTimeout(r, ms));
+const tally = list => list.reduce((o, g) => (o[g] = (o[g] || 0) + 1, o), {});
+const ROMAN = ['', 'I', 'II', 'III'];
 
 function newGame(seats){
   const n = seats.length;
@@ -580,8 +622,15 @@ function newGame(seats){
     pending: null,           /* {kind:'discard'} | {kind:'noble', ids:[]} */
     log: [], seq: 0
   };
-  UI.selCard = null; UI.pick = []; UI.seen = new Set();
+  resetUI();
   logMsg(null, 'The market opens. ' + n + ' merchants, ' + (n+1) + ' nobles watching.');
+}
+
+function resetUI(){
+  clearTimeout(UI.botTimer);
+  Object.assign(UI, { selCard:null, pick:[], seen:new Set(), busy:false, caption:'', lastCaption:'',
+                      intent:null, pops:[], bankPops:[], lastPts:{}, lastCur:-1 });
+  FX.textContent = '';
 }
 
 const cur = () => S.players[S.cur];
@@ -642,104 +691,343 @@ function canAddPick(g){
   return true;
 }
 
-function actTake(pick){
-  const p = cur();
-  pick.forEach(g => { S.bank[g]--; p.tokens[g]++; });
-  const counts = {};
-  pick.forEach(g => counts[g] = (counts[g]||0)+1);
-  logMsg(p, 'took ' + gemsInline(counts) + '.');
-  endTurn();
+
+/* ═══════════════════════════════════════════════════════════
+   Motion — every move travels across the table, for humans
+   and bots alike. State changes only after the flight lands.
+   ═══════════════════════════════════════════════════════════ */
+const q = sel => document.querySelector(sel);
+const rectOf = el => el ? el.getBoundingClientRect() : null;
+const bankChip = g => q('#bank [data-token="' + g + '"] .chip');
+const panelOf = i => q('.pl[data-pl="' + i + '"]');
+const cardEl = id => q('#rows [data-card="' + id + '"]') || q('[data-res="' + id + '"]') || q('[data-hid="' + id + '"]');
+
+/* where something lands in a merchant's panel: on the matching stack if there
+   is one, otherwise just past the end of that row (k spaces new stacks apart) */
+function landing(i, row, gem, k){
+  const pl = panelOf(i);
+  if(!pl) return null;
+  const rowEl = pl.querySelector('[data-row="' + row + '"]') || pl.querySelector('.pl-head');
+  if(gem){
+    const st = rowEl.querySelector('[data-stack="' + gem + '"] .chip');
+    if(st) return st.getBoundingClientRect();
+  }
+  const last = rowEl.lastElementChild;
+  const r = (last || rowEl).getBoundingClientRect();
+  const x = (last ? r.right + 8 : r.left) + (k || 0) * 26;
+  return { left:x, top:r.top + r.height / 2 - 10, width:20, height:20 };
 }
 
-/* ── card actions ───────────────────────────────────────── */
+const FX = document.createElement('div');
+FX.className = 'fx';
+FX.setAttribute('aria-hidden', 'true');
+document.body.appendChild(FX);
+
+function clampPt(x, y){
+  const m = 26;
+  return [Math.min(Math.max(x, m), innerWidth - m), Math.min(Math.max(y, m), innerHeight - m)];
+}
+
+/* Fly a clone along an arc from one rect to another. Off-screen ends are pinned
+   to the viewport edge and faded, so the direction still reads on a phone. */
+function fly(html, from, to, o){
+  o = o || {};
+  const f = F();
+  if(!from || !to || !f) return Promise.resolve();
+  const w = o.w || from.width, h = o.h || from.height;
+  let x0 = from.left + from.width / 2, y0 = from.top + from.height / 2;
+  let x1 = to.left + to.width / 2,     y1 = to.top + to.height / 2;
+  const [cx0, cy0] = clampPt(x0, y0), [cx1, cy1] = clampPt(x1, y1);
+  const hide0 = cx0 !== x0 || cy0 !== y0, hide1 = cx1 !== x1 || cy1 !== y1;
+  x0 = cx0; y0 = cy0; x1 = cx1; y1 = cy1;
+
+  const el = document.createElement('div');
+  el.className = 'fx-item';
+  el.innerHTML = html;
+  el.style.cssText = 'left:' + (x0 - w / 2) + 'px; top:' + (y0 - h / 2) + 'px; width:' + w + 'px; height:' + h + 'px';
+  FX.appendChild(el);
+
+  const s0 = o.s0 === undefined ? 1 : o.s0;
+  const s1 = o.s1 === undefined ? Math.min(to.width / w, to.height / h) : o.s1;
+  const dx = x1 - x0, dy = y1 - y0;
+  const lift = o.arc === undefined ? Math.min(150, 34 + Math.hypot(dx, dy) * 0.22) : o.arc;
+  const cx = dx / 2, cy = dy / 2 - lift;                 /* bezier control point, raised */
+  const swell = o.swell === undefined ? 0.14 : o.swell, rot = o.rot || 0;
+  const frames = [];
+  for(let k = 0; k <= 12; k++){
+    const t = k / 12, u = 1 - t;
+    const bx = 2 * u * t * cx + t * t * dx, by = 2 * u * t * cy + t * t * dy;
+    const sc = s0 + (s1 - s0) * t + Math.sin(Math.PI * t) * swell;
+    let op = 1;
+    if(hide0 && t < 0.25) op = t / 0.25;
+    if((hide1 || o.fade) && t > 0.72) op = Math.max(0, (1 - t) / 0.28);
+    frames.push({ transform:'translate(' + bx + 'px,' + by + 'px) scale(' + sc + ') rotate(' + (rot * Math.sin(Math.PI * t)) + 'deg)', opacity:op });
+  }
+  const timing = { duration:(o.dur || 620) * f, delay:(o.delay || 0) * f, easing:'cubic-bezier(.45,.05,.3,1)', fill:'both' };
+  const anim = el.animate(frames, timing);
+  if(o.flip){                                            /* turn face down mid-flight */
+    const back = el.querySelector('.fx-back');
+    if(back) back.animate([{ opacity:0 }, { opacity:0, offset:0.3 }, { opacity:1, offset:0.55 }, { opacity:1 }], timing);
+  }
+  const done = () => el.remove();
+  return anim.finished.then(done, done);
+}
+
+/* animate an element that just rendered in place, from where it came from */
+function flipFrom(el, from){
+  const f = F();
+  if(!el || !from || !f) return;
+  const to = el.getBoundingClientRect();
+  const dx = (from.left + from.width / 2) - (to.left + to.width / 2);
+  const dy = (from.top + from.height / 2) - (to.top + to.height / 2);
+  const s = from.width / to.width;
+  el.animate([
+    { transform:'translate(' + dx + 'px,' + dy + 'px) scale(' + s + ')' },
+    { transform:'translate(' + dx * 0.4 + 'px,' + (dy * 0.4 - 26) + 'px) scale(' + ((s + 1) / 2 + 0.1) + ')', offset:0.55 },
+    { transform:'none' }
+  ], { duration:400 * f, easing:'cubic-bezier(.3,.7,.3,1)' });
+}
+
+function pop(el, big){
+  const f = F();
+  if(!f) return;
+  el.animate([
+    { transform:'scale(1)' },
+    { transform:'scale(' + (big ? 1.4 : 1.22) + ')', filter:'brightness(1.3)', offset:0.4 },
+    { transform:'scale(1)' }
+  ], { duration:480 * f, easing:'cubic-bezier(.3,.7,.3,1)' });
+}
+
+/* Effects that belong to the DOM a turn finally settles on. Several renders can
+   run in one tick; this waits for the frame so it animates the one that's shown. */
+let postQueued = false;
+function schedulePost(){
+  if(postQueued) return;
+  postQueued = true;
+  requestAnimationFrame(() => { postQueued = false; runPost(); });
+}
+function runPost(){
+  if(!S) return;
+  const f = F();
+  let order = 0;
+  for(const lvl of [3,2,1]) S.market[lvl].forEach(c => {          /* deal new cards off their deck */
+    if(!c || UI.seen.has(c.id)) return;
+    UI.seen.add(c.id);
+    const el = q('#rows [data-card="' + c.id + '"]'), deck = q('[data-deck="' + lvl + '"]');
+    if(!el || !deck || !f) return;
+    const a = el.getBoundingClientRect(), d = deck.getBoundingClientRect();
+    const dx = (d.left + d.width / 2) - (a.left + a.width / 2), dy = (d.top + d.height / 2) - (a.top + a.height / 2);
+    el.animate([
+      { transform:'translate(' + dx + 'px,' + dy + 'px) scale(' + (d.width / a.width) + ') rotateY(80deg)', opacity:0 },
+      { opacity:1, offset:0.3 },
+      { transform:'none', opacity:1 }
+    ], { duration:560 * f, delay:(order++) * 75 * f, easing:'cubic-bezier(.2,.8,.25,1)', fill:'backwards' });
+  });
+  for(const pp of UI.pops){                                       /* things landing in a purse */
+    const pl = panelOf(pp.i);
+    const row = pl && pl.querySelector('[data-row="' + pp.row + '"]');
+    const el = row && (pp.gem ? row.querySelector('[data-stack="' + pp.gem + '"]') : row);
+    if(el) pop(el);
+  }
+  for(const g of UI.bankPops){ const el = bankChip(g); if(el) pop(el); }
+  UI.pops = []; UI.bankPops = [];
+  S.players.forEach(p => {                                        /* prestige ticking up */
+    const before = UI.lastPts[p.i];
+    if(before !== undefined && p.points > before){
+      const el = q('.pl[data-pl="' + p.i + '"] .pl-pts');
+      if(el) pop(el, true);
+    }
+    UI.lastPts[p.i] = p.points;
+  });
+  if(UI.lastCur !== S.cur){                                       /* the turn changes hands */
+    UI.lastCur = S.cur;
+    const w = q('#turnbar .who');
+    if(w && f) w.animate([{ opacity:0, transform:'translateY(8px)' }, { opacity:1, transform:'none' }],
+                         { duration:380 * f, easing:'cubic-bezier(.2,.8,.3,1)' });
+  }
+  if(UI.lastCaption !== UI.caption){
+    UI.lastCaption = UI.caption;
+    const h = q('#turnbar .hint');
+    if(h && f && UI.caption) h.animate([{ opacity:0, transform:'translateX(-6px)' }, { opacity:1, transform:'none' }],
+                                       { duration:300 * f, easing:'ease-out' });
+  }
+}
+
+/* ── actions: fly first, then commit ────────────────────── */
 function refill(level, slot){
   S.market[level][slot] = S.decks[level].pop() || null;
 }
 
-function actBuy(where, id){
-  const p = cur();
+async function actTake(pick, src){
+  const live = S, p = cur();
+  UI.busy = true; UI.selCard = null;
+  const counts = tally(pick);
+  UI.caption = 'taking ' + gemsInline(counts);
+  renderTurnbar();
+  const trayChips = src === 'tray' ? Array.from(document.querySelectorAll('#tray [data-unpick] .chip')) : [];
+  const fresh = {}; let nextFresh = 0;
+  const flights = pick.map((g, k) => {
+    const from = rectOf(trayChips[k] || bankChip(g));
+    if(trayChips[k]) trayChips[k].style.visibility = 'hidden';
+    if(!p.tokens[g] && fresh[g] === undefined) fresh[g] = nextFresh++;
+    const to = landing(p.i, 'tokens', p.tokens[g] ? g : null, fresh[g] || 0);
+    return fly(chipHTML(g, '', ''), from, to,
+      { w:34, h:34, s0: from ? from.width / 34 : 1, s1:20 / 34, delay:k * 95, dur:600 });
+  });
+  await Promise.all(flights);
+  if(S !== live) return;
+
+  pick.forEach(g => { S.bank[g]--; p.tokens[g]++; });
+  UI.pick = [];
+  Object.keys(counts).forEach(g => UI.pops.push({ i:p.i, row:'tokens', gem:g }));
+  logMsg(p, 'took ' + gemsInline(counts) + '.');
+  await endTurn(live);
+}
+
+async function actBuy(where, id){
+  const live = S, p = cur();
   let card = null, level = null, slot = -1;
   if(where === 'market'){
     for(const l of [1,2,3]){
       const k = S.market[l].findIndex(c => c && c.id === id);
       if(k > -1){ card = S.market[l][k]; level = l; slot = k; break; }
     }
-  } else {
-    const k = p.reserved.findIndex(c => c.id === id);
-    if(k > -1) card = p.reserved[k];
-  }
+  } else card = p.reserved.find(c => c.id === id) || null;
   if(!card) return;
   const pay = priceFor(p, card);
   if(!pay) return;
 
-  for(const g of GEMS){ p.tokens[g] -= pay[g]; S.bank[g] += pay[g]; }
-  p.tokens.gold -= pay.gold; S.bank.gold += pay.gold;
+  UI.busy = true;
+  UI.caption = 'buying the <b>' + esc(card.nm) + '</b>';
+  const big = where === 'market';
+  const from = rectOf(cardEl(card.id));          /* measured before the re-render drops the lift */
+  UI.selCard = null; UI.intent = null;
+  render();
+  const src = cardEl(card.id);
+  if(src) src.style.visibility = 'hidden';
 
+  const fw = big && from ? from.width : 150, fh = big && from ? from.height : 134;
+  const flights = [ fly(cardFace(card), from, landing(p.i, 'bonus', card.gem, 0),
+    { w:fw, h:fh, s0: big || !from ? 1 : from.width / 150, s1:0.26, fade:true, dur:760, rot:-5, swell: big ? 0.08 : 0.35 }) ];
+  let k = 0;
+  for(const g of GEMS.concat('gold')){                            /* the payment heads back to the bank */
+    for(let n = 0; n < pay[g]; n++, k++){
+      flights.push(fly(chipHTML(g, '', ''), landing(p.i, 'tokens', g), rectOf(bankChip(g)),
+        { w:30, h:30, s0:20 / 30, s1:44 / 30, delay:180 + k * 70, dur:560 }));
+    }
+  }
+  await Promise.all(flights);
+  if(S !== live) return;
+
+  for(const g of GEMS){ p.tokens[g] -= pay[g]; S.bank[g] += pay[g]; if(pay[g]) UI.bankPops.push(g); }
+  if(pay.gold){ p.tokens.gold -= pay.gold; S.bank.gold += pay.gold; UI.bankPops.push('gold'); }
   if(where === 'market') refill(level, slot);
   else p.reserved = p.reserved.filter(c => c.id !== id);
-
   p.cards.push(card);
   p.bonuses[card.gem]++;
+  UI.pops.push({ i:p.i, row:'bonus', gem:card.gem });
   logMsg(p, 'bought the <b>' + card.nm + '</b> ' + gemWord(card.gem) +
     (card.points ? ' for ' + card.points + ' prestige' : '') + '.' +
     (pay.gold ? ' (' + pay.gold + ' gold spent)' : ''));
-  UI.selCard = null;
-  endTurn();
+  await endTurn(live);
 }
 
-function actReserve(where, id){
-  const p = cur();
+async function actReserve(where, id){
+  const live = S, p = cur();
   if(p.reserved.length >= RESERVE_LIMIT) return;
-  let card = null;
+  let card = null, level = null, slot = -1;
   if(where === 'market'){
     for(const l of [1,2,3]){
       const k = S.market[l].findIndex(c => c && c.id === id);
-      if(k > -1){ card = S.market[l][k]; refill(l, k); break; }
+      if(k > -1){ card = S.market[l][k]; level = l; slot = k; break; }
     }
-  } else {                                     /* top of a face-down deck */
-    const l = Number(id);
-    card = S.decks[l].pop() || null;
+  } else {                                                        /* top of a face-down deck */
+    level = Number(id);
+    card = S.decks[level][S.decks[level].length - 1] || null;
   }
   if(!card) return;
+
+  UI.busy = true;
+  UI.caption = where === 'market' ? 'reserving the <b>' + esc(card.nm) + '</b>'
+                                  : 'reserving blind from the level ' + ROMAN[level] + ' deck';
+  const srcOf = () => where === 'market' ? cardEl(card.id) : q('[data-deck="' + level + '"]');
+  const from = rectOf(srcOf());
+  UI.selCard = null; UI.intent = null;
+  render();
+  if(where === 'market'){ const s = srcOf(); if(s) s.style.visibility = 'hidden'; }
+
+  const fw = from ? from.width : 120, fh = from ? from.height : 134;
+  const html = where === 'deck' ? '<div class="fx-cardback"></div>'
+             : cardFace(card) + (p.bot ? '<div class="fx-back"></div>' : '');
+  const takesGold = S.bank.gold > 0;
+  const flights = [ fly(html, from, landing(p.i, 'reserve', null, 0),
+    { w:fw, h:fh, s1:46 / fh, fade:true, dur:720, rot:6, flip: p.bot && where === 'market' }) ];
+  if(takesGold) flights.push(fly(chipHTML('gold', '', ''), rectOf(bankChip('gold')), landing(p.i, 'tokens', 'gold', 0),
+    { w:34, h:34, s0:44 / 34, s1:20 / 34, delay:240 }));
+  await Promise.all(flights);
+  if(S !== live) return;
+
+  if(where === 'market') refill(level, slot);
+  else S.decks[level].pop();
   p.reserved.push(card);
   let extra = '';
-  if(S.bank.gold > 0){ S.bank.gold--; p.tokens.gold++; extra = ' and took a gold'; }
-  logMsg(p, 'reserved ' + (where === 'market' ? 'the <b>' + card.nm + '</b>' : 'a card from the level ' + card.level + ' deck') + extra + '.');
-  UI.selCard = null;
-  endTurn();
+  if(takesGold && S.bank.gold > 0){
+    S.bank.gold--; p.tokens.gold++; extra = ' and took a gold';
+    UI.pops.push({ i:p.i, row:'tokens', gem:'gold' });
+  }
+  logMsg(p, 'reserved ' + (where === 'market' ? 'the <b>' + card.nm + '</b>' : 'a card from the level ' + ROMAN[level] + ' deck') + extra + '.');
+  await endTurn(live);
 }
 
 /* ── end of turn: limit → nobles → scoring ──────────────── */
-function endTurn(){
+async function endTurn(live){
+  if(S !== live) return;
   const p = cur();
   if(held(p) > HAND_LIMIT){
     S.pending = { kind:'discard' };
-    if(p.bot){ botDiscard(); return; }
-    render(); return;
+    if(p.bot){ await botDiscard(live); return; }
+    UI.busy = false; UI.caption = '';
+    render();
+    return;
   }
-  nobleStep();
+  await nobleStep(live);
 }
 
-function nobleStep(){
+async function nobleStep(live){
+  if(S !== live) return;
   const p = cur();
   const ready = S.nobles.filter(nb => GEMS.every(g => p.bonuses[g] >= (nb.req[g]||0)));
-  if(ready.length === 1){ takeNoble(ready[0].id); return; }
+  if(ready.length === 1){ await takeNoble(ready[0].id, live); return; }
   if(ready.length > 1){
-    if(p.bot){ takeNoble(botNoble(ready).id); return; }
+    if(p.bot){ await takeNoble(botNoble(ready).id, live); return; }
     S.pending = { kind:'noble', ids: ready.map(n => n.id) };
-    render(); return;
+    UI.busy = false; UI.caption = '';
+    render();
+    return;
   }
   finishTurn();
 }
 
-function takeNoble(id){
+async function takeNoble(id, live){
+  if(S !== live) return;
   const p = cur(), nb = S.nobles.find(n => n.id === id);
+  S.pending = null;
   if(nb){
+    UI.busy = true;
+    UI.caption = 'a visit from <b>' + esc(nb.nm) + '</b>';
+    render();                                     /* settle the purchase on screen first */
+    const src = q('#nobles [data-nid="' + id + '"]');
+    const from = rectOf(src);
+    if(src) src.style.visibility = 'hidden';
+    const pl = panelOf(p.i);
+    await fly(nobleTile(nb, true, false), from, rectOf(pl && pl.querySelector('.pl-head')),
+      { w: from ? from.width : 200, h: from ? from.height : 62, s1:0.55, fade:true, dur:840, arc:70, swell:0.12 });
+    if(S !== live) return;
     S.nobles = S.nobles.filter(n => n.id !== id);
     p.nobles.push(nb);
-    logMsg(p, 'is visited by <b>' + nb.nm + '</b> — 3 prestige.');
+    UI.pops.push({ i:p.i, row:'nobles' });
+    logMsg(p, 'won the favour of <b>' + nb.nm + '</b>, 3 prestige.');
   }
-  S.pending = null;
   finishTurn();
 }
 
@@ -747,6 +1035,7 @@ function score(p){ return p.cards.reduce((s,c)=>s+c.points, 0) + p.nobles.length
 
 function finishTurn(){
   S.pending = null;
+  UI.busy = false; UI.caption = ''; UI.intent = null;
   S.players.forEach(p => p.points = score(p));
   const p = cur();
   if(p.points >= WIN && !S.endAfterRound){
@@ -880,41 +1169,68 @@ function botActions(p){
   return acts.sort((a,b) => b.v - a.v);
 }
 
-function botMove(){
-  if(!S || S.over || !cur().bot) return;
-  const p = cur();
+/* A bot turn plays out like yours: it shows what it is reaching for, then the
+   same flights run. */
+async function botMove(){
+  if(!S || S.over || S.pending || !cur().bot) return;
+  if(UI.busy){ scheduleBot(); return; }
+  const live = S, p = cur();
   const best = botActions(p)[0];
   if(!best){ logMsg(p, 'passes — nothing legal to do.'); finishTurn(); return; }
-  if(best.kind === 'buy') actBuy(best.where, best.id);
-  else if(best.kind === 'reserve') actReserve(best.where, best.id);
-  else actTake(best.pick);
+  UI.busy = true;
+  if(best.kind === 'take'){
+    UI.intent = { gems: best.pick };
+    UI.caption = 'reaching for ' + gemsInline(tally(best.pick));
+  } else if(best.where === 'deck'){
+    UI.intent = { deck: best.id };
+    UI.caption = 'eyeing the level ' + ROMAN[best.id] + ' deck';
+  } else {
+    UI.intent = { card: best.id };
+    UI.caption = (best.kind === 'buy' ? 'about to buy ' : 'about to reserve ') + 'the <b>' + esc(best.label) + '</b>';
+  }
+  render();
+  await wait(480 * (F() || 0.5));
+  if(S !== live) return;
+  if(best.kind === 'buy') await actBuy(best.where, best.id);
+  else if(best.kind === 'reserve') await actReserve(best.where, best.id);
+  else await actTake(best.pick, 'bank');
 }
 
 function scheduleBot(){
   clearTimeout(UI.botTimer);
-  UI.botTimer = setTimeout(botMove, UI.botMs);
+  UI.botTimer = setTimeout(botMove, INSTANT() ? 0 : SPEEDS[UI.speed].think);
 }
 
-function botDiscard(){
+async function botDiscard(live){
   const p = cur(), need = needVector(p);
-  while(held(p) > HAND_LIMIT){
+  const left = Object.assign({}, p.tokens), drops = [];
+  let h = held(p);
+  while(h > HAND_LIMIT){
     let worst = null, wv = Infinity;
     for(const g of GEMS){
-      if(!p.tokens[g]) continue;
-      const v = need[g] - p.tokens[g] * 0.4;
+      if(!left[g]) continue;
+      const v = need[g] - left[g] * 0.4;
       if(v < wv){ wv = v; worst = g; }
     }
-    if(!worst) worst = 'gold';                                 /* gold goes last */
-    p.tokens[worst]--; S.bank[worst]++;
-    logMsg(p, 'returned a ' + NAME[worst].toLowerCase() + ' to the bank.');
+    if(!worst) worst = 'gold';                                    /* gold goes last */
+    left[worst]--; drops.push(worst); h--;
   }
+  const counts = tally(drops);
+  UI.busy = true;
+  UI.caption = 'returning ' + gemsInline(counts);
+  render();                                                       /* show the over-full purse first */
+  await Promise.all(drops.map((g, k) => fly(chipHTML(g, '', ''), landing(p.i, 'tokens', g), rectOf(bankChip(g)),
+    { w:30, h:30, s0:20 / 30, s1:44 / 30, delay:k * 90, dur:520 })));
+  if(S !== live) return;
+  drops.forEach(g => { p.tokens[g]--; S.bank[g]++; });
+  Object.keys(counts).forEach(g => UI.bankPops.push(g));
+  logMsg(p, 'returned ' + gemsInline(counts) + ' to the bank.');
   S.pending = null;
-  nobleStep();
+  await nobleStep(live);
 }
 
 function botNoble(options){
-  const p = cur();
-  /* all nobles are 3 points; keep the one whose colours are scarcest for rivals */
+  /* all nobles are 3 points; take the one with the smallest total requirement */
   return options.slice().sort((a,b) => {
     const w = nb => GEMS.reduce((s,g) => s + (nb.req[g]||0), 0);
     return w(a) - w(b);
@@ -937,6 +1253,15 @@ function gemsInline(counts){
   return '<span class="inline">' + parts.join('') + '</span>';
 }
 const myTurn = () => S && !S.over && !S.pending && !cur().bot;
+const canAct = () => myTurn() && !UI.busy;
+/* whose shortfalls and noble progress the board shows: the player to move if
+   human, otherwise the lone human at the table so they can plan during bot turns */
+function viewer(){
+  const p = cur();
+  if(!p.bot) return p;
+  const humans = S.players.filter(x => !x.bot);
+  return humans.length === 1 ? humans[0] : p;
+}
 
 function render(){
   if(!S) return;
@@ -950,54 +1275,66 @@ function render(){
   if(!$('noble-modal').hidden) renderNobleChoice();
   $('over-modal').hidden = !S.over;
   if(S.over) renderOver();
+  schedulePost();
 }
 
 function renderTurnbar(){
   const p = cur();
-  let hint;
-  if(S.over) hint = 'The market closes.';
-  else if(p.bot) hint = 'Weighing the table…';
-  else if(S.pending && S.pending.kind === 'discard') hint = 'Return gems down to ' + HAND_LIMIT + '.';
-  else if(S.pending) hint = 'A noble is waiting on your answer.';
-  else hint = 'Take gems from the bank, or pick a card to buy or reserve.';
+  let who, hint;
+  if(S.over){ who = 'Final accounts'; hint = 'The market closes.'; }
+  else {
+    /* captions are status phrases ("buying the …") so they read after any name */
+    who = esc(p.name) + (p.bot ? '' : ' — your turn');
+    hint = UI.caption ? UI.caption
+         : p.bot ? 'Weighing the table…'
+         : S.pending && S.pending.kind === 'discard' ? 'Return gems down to ' + HAND_LIMIT + '.'
+         : S.pending ? 'A noble is waiting on your answer.'
+         : 'Take gems from the bank, or pick a card to buy or reserve.';
+  }
+  const thinking = !S.over && (p.bot || UI.busy);
   $('turnbar').innerHTML =
-    '<span class="who"><span class="pip' + (p.bot && !S.over ? ' thinking' : '') + '"></span>' +
-    (S.over ? 'Final accounts' : esc(p.name) + (p.bot ? '' : ' — your turn')) + '</span>' +
+    '<span class="who"><span class="pip' + (thinking ? ' thinking' : '') + '"></span>' + who + '</span>' +
     '<span class="hint">' + hint + '</span><span class="spacer"></span>' +
     (S.endAfterRound && !S.over ? '<span class="badge">Final round</span>' : '') +
     '<span class="hint tnum">' + p.points + ' / ' + WIN + ' prestige</span>';
+  schedulePost();
 }
 
 function nobleTile(nb, ready, clickable){
   const reqs = GEMS.filter(g => nb.req[g]).map(g => chipHTML(g, nb.req[g], 'sm')).join('');
-  return '<' + (clickable ? 'button type="button"' : 'div') + ' class="noble' + (ready ? ' ready' : '') + '"' +
-    (clickable ? ' data-noble="' + nb.id + '"' : '') + '>' +
+  const tag = clickable ? 'button' : 'div';
+  return '<' + tag + (clickable ? ' type="button" data-noble="' + nb.id + '"' : ' data-nid="' + nb.id + '"') +
+    ' class="noble' + (ready ? ' ready' : '') + '">' +
     '<span class="pts">3</span><span class="body"><span class="nm">' + esc(nb.nm) + '</span>' +
-    '<span class="req">' + reqs + '</span></span></' + (clickable ? 'button' : 'div') + '>';
+    '<span class="req">' + reqs + '</span></span></' + tag + '>';
 }
 
 function renderNobles(){
-  const p = cur();
+  const v = viewer();
   $('nobles').innerHTML = S.nobles.map(nb =>
-    nobleTile(nb, !p.bot && GEMS.every(g => p.bonuses[g] >= (nb.req[g]||0)), false)
+    nobleTile(nb, !v.bot && GEMS.every(g => v.bonuses[g] >= (nb.req[g]||0)), false)
   ).join('') || '<div class="noble"><span class="body"><span class="nm">Every noble has found a merchant.</span></span></div>';
 }
 
-function cardHTML(card, where){
-  const p = cur();
-  const sel = UI.selCard && UI.selCard.id === card.id;
-  const buy = canBuy(p, card);
-  const miss = missing(p, card);
+function cardInner(card, miss){
   const costs = GEMS.filter(g => card.cost[g]).map(g =>
-    '<span class="cost-i' + (miss.per[g] > 0 ? ' short' : '') + '">' + chipHTML(g, card.cost[g], 'sm') + '</span>'
+    '<span class="cost-i' + (miss && miss.per[g] > 0 ? ' short' : '') + '">' + chipHTML(g, card.cost[g], 'sm') + '</span>'
   ).join('');
-  return '<button type="button" class="card' + (buy && !p.bot ? ' buyable' : '') + (sel ? ' sel' : '') +
-    (UI.seen.has(card.id) ? '' : ' enter') + '" data-gem="' + card.gem + '" data-card="' + card.id +
-    '" data-where="' + where + '" aria-label="' + esc(card.nm) + ', ' + card.points + ' prestige">' +
-    '<span class="crown"><span class="pts' + (card.points ? '' : ' zero') + '">' + (card.points || '·') + '</span>' +
+  return '<span class="crown"><span class="pts' + (card.points ? '' : ' zero') + '">' + (card.points || '·') + '</span>' +
     chipHTML(card.gem, '', 'sm') + '</span>' +
     '<span class="face"><span class="mine">' + esc(card.nm) + '</span></span>' +
-    '<span class="costs">' + costs + '</span></button>';
+    '<span class="costs">' + costs + '</span>';
+}
+function cardFace(card){ return '<div class="card" data-gem="' + card.gem + '">' + cardInner(card, null) + '</div>'; }
+
+function cardHTML(card, where){
+  const v = viewer();
+  const sel = UI.selCard && UI.selCard.id === card.id;
+  const buy = canAct() && canBuy(v, card);
+  const intent = UI.intent && UI.intent.card === card.id;
+  return '<button type="button" class="card' + (buy ? ' buyable' : '') + (sel ? ' sel' : '') + (intent ? ' intent' : '') +
+    '" data-gem="' + card.gem + '" data-card="' + card.id + '" data-where="' + where +
+    '" aria-label="' + esc(card.nm) + ', ' + card.points + ' prestige">' + cardInner(card, v.bot ? null : missing(v, card)) + '</button>';
 }
 
 function actionBar(card){
@@ -1012,48 +1349,54 @@ function actionBar(card){
 }
 
 function renderRows(){
-  const p = cur(), canRes = myTurn() && p.reserved.length < RESERVE_LIMIT;
+  const p = cur(), canRes = canAct() && p.reserved.length < RESERVE_LIMIT;
   let html = '';
   for(const lvl of [3,2,1]){
     const n = S.decks[lvl].length;
+    const intent = UI.intent && UI.intent.deck !== undefined && String(UI.intent.deck) === String(lvl);
     html += '<div class="row">' +
-      '<button type="button" class="deck" data-deck="' + lvl + '" ' + (canRes && n ? '' : 'disabled') +
-      ' title="Reserve the top card of the level ' + lvl + ' deck, sight unseen">' +
-      '<span class="lvl">' + ['','I','II','III'][lvl] + '</span><span class="cnt tnum">' + n + '</span></button>';
+      '<button type="button" class="deck' + (n ? '' : ' dim') + (intent ? ' intent' : '') + '" data-deck="' + lvl + '" ' +
+      (canRes && n ? '' : 'disabled') + ' title="Reserve the top card of the level ' + lvl + ' deck, sight unseen">' +
+      '<span class="lvl">' + ROMAN[lvl] + '</span><span class="cnt tnum">' + n + '</span></button>';
     for(let i=0;i<4;i++){
       const c = S.market[lvl][i];
       html += '<div class="slot' + (c ? '' : ' empty') + '">';
       if(c){
         html += cardHTML(c, 'market');
-        if(UI.selCard && UI.selCard.id === c.id && myTurn()) html += actionBar(c);
+        if(UI.selCard && UI.selCard.id === c.id && canAct()) html += actionBar(c);
       }
       html += '</div>';
     }
     html += '</div>';
   }
   $('rows').innerHTML = html;
-  marketCards().forEach(c => UI.seen.add(c.id));
 }
 
 function renderBank(){
-  const live = myTurn();
+  const live = canAct();
   $('bank').innerHTML = GEMS.concat('gold').map(g => {
     const picked = UI.pick.filter(x => x === g).length;
-    const dis = g === 'gold' ? true : !(live && canAddPick(g));
-    const title = g === 'gold' ? 'Gold is only gained by reserving a card' : 'Take ' + NAME[g].toLowerCase();
-    return '<button type="button" class="tokbtn' + (picked ? ' picked' : '') + '" data-token="' + g + '" ' +
-      (dis ? 'disabled' : '') + ' title="' + title + '">' +
-      chipHTML(g, '', 'lg') + '<span class="n">' + S.bank[g] + (picked ? ' · ' + picked + ' held' : '') + '</span></button>';
+    const wanted = UI.intent && UI.intent.gems ? UI.intent.gems.filter(x => x === g).length : 0;
+    const usable = g !== 'gold' && live && canAddPick(g);
+    const dim = S.bank[g] === 0 || (live && g !== 'gold' && !usable);
+    const title = g === 'gold' ? 'Gold is only gained by reserving a card' : NAME[g] + ': ' + S.bank[g] + ' left';
+    const note = picked ? ' · ' + picked + ' picked' : wanted > 1 ? ' · takes 2' : '';
+    return '<button type="button" class="tokbtn' + (picked ? ' picked' : '') + (wanted ? ' intent' : '') + (dim ? ' dim' : '') +
+      '" data-token="' + g + '" ' + (usable ? '' : 'disabled') + ' title="' + title + '">' +
+      chipHTML(g, '', 'lg') + '<span class="n tnum">' + S.bank[g] + note + '</span></button>';
   }).join('');
 }
 
 function renderTray(){
-  if(!myTurn()){
-    $('tray').innerHTML = '<span class="msg">' + (S.over ? 'The game is over.' : 'Waiting on ' + esc(cur().name) + '.') + '</span>';
+  if(!canAct()){
+    $('tray').innerHTML = '<span class="msg">' + (S.over ? 'The game is over.'
+      : cur().bot ? 'Waiting on ' + esc(cur().name) + '.' : 'Settling your move…') + '</span>';
     return;
   }
   const v = pickValid(UI.pick);
-  const slots = [0,1,2].map(i => UI.pick[i] ? chipHTML(UI.pick[i], '', '') : '<span class="hole"></span>').join('');
+  const slots = [0,1,2].map(i => UI.pick[i]
+    ? '<button type="button" class="unpick" data-unpick="' + i + '" title="Put it back">' + chipHTML(UI.pick[i], '', '') + '</button>'
+    : '<span class="hole"></span>').join('');
   $('tray').innerHTML =
     '<span class="slots">' + slots + '</span>' +
     '<span class="msg">' + v.why + '</span>' +
@@ -1062,32 +1405,31 @@ function renderTray(){
 }
 
 function renderPlayers(){
+  const humans = S.players.filter(x => !x.bot).length;
   $('players').innerHTML = S.players.map(p => {
-    const bonusRow = GEMS.filter(g => p.bonuses[g]).map(g =>
-      '<span class="stack">' + chipHTML(g, '', 'sm flat') + '<b>' + p.bonuses[g] + '</b></span>').join('')
-      || '<span class="tk" style="font-size:11.5px; color:var(--ink-faint)">no cards yet</span>';
-    const tokRow = GEMS.concat('gold').filter(g => p.tokens[g]).map(g =>
-      '<span class="stack">' + chipHTML(g, '', 'sm flat') + '<b>' + p.tokens[g] + '</b></span>').join('')
-      || '<span class="tk" style="font-size:11.5px; color:var(--ink-faint)">empty purse</span>';
-    const mine = p === cur() && !p.bot;
+    const stack = (g, n) => '<span class="stack" data-stack="' + g + '">' + chipHTML(g, '', 'sm flat') + '<b>' + n + '</b></span>';
+    const bonusRow = GEMS.filter(g => p.bonuses[g]).map(g => stack(g, p.bonuses[g])).join('') || '<span class="none">no cards yet</span>';
+    const tokRow = GEMS.concat('gold').filter(g => p.tokens[g]).map(g => stack(g, p.tokens[g])).join('') || '<span class="none">empty purse</span>';
+    /* your own reserve is face up for you; with several humans, only on your turn */
+    const open = !p.bot && (humans === 1 || p === cur());
     const res = p.reserved.map(c => {
-      if(!mine) return '<span class="minicard back" title="Reserved, held face down"></span>';
-      const buy = canBuy(p, c);
-      return '<button type="button" class="minicard' + (buy && myTurn() ? ' buyable' : '') + '" data-res="' + c.id +
-        '" ' + (buy && myTurn() ? '' : 'disabled') + ' title="' + esc(c.nm) + (buy ? ' — buy' : ' — not yet affordable') + '">' +
+      if(!open) return '<span class="minicard back' + (UI.intent && UI.intent.card === c.id ? ' intent' : '') +
+        '" data-hid="' + c.id + '" title="Reserved, held face down"></span>';
+      const buy = p === cur() && canAct() && canBuy(p, c);
+      return '<button type="button" class="minicard' + (buy ? ' buyable' : '') + '" data-res="' + c.id +
+        '" ' + (buy ? '' : 'disabled') + ' title="' + esc(c.nm) + (buy ? ': buy it' : ': not yet affordable') + '">' +
         '<span class="mc-top"><span class="mc-p">' + (c.points || '·') + '</span>' + chipHTML(c.gem, '', 'xs') + '</span>' +
         '<span class="mc-cost">' + GEMS.filter(g => c.cost[g]).map(g => chipHTML(g, c.cost[g], 'xs')).join('') + '</span></button>';
     }).join('');
-    return '<div class="pl' + (p === cur() && !S.over ? ' turn' : '') + '">' +
+    return '<div class="pl' + (p === cur() && !S.over ? ' turn' : '') + '" data-pl="' + p.i + '">' +
       '<div class="pl-head"><span class="pl-name">' + esc(p.name) + '</span>' +
       (p.bot ? '<span class="pl-tag">bot</span>' : '<span class="pl-tag">you</span>') +
       '<span class="pl-pts tnum">' + p.points + '<small> pp</small></span></div>' +
-      '<div class="pl-grid">' + bonusRow + '</div>' +
-      '<div class="pl-grid">' + tokRow + '</div>' +
-      (p.nobles.length ? '<div class="pl-grid">' + p.nobles.map(nb =>
-        '<span class="nbl-mini">' + esc(nb.nm) + '</span>').join('') + '</div>' : '') +
-      (p.reserved.length ? '<div class="hold">Reserved · ' + p.reserved.length + '/' + RESERVE_LIMIT +
-        '</div><div class="pl-res">' + res + '</div>' : '') +
+      '<div class="pl-grid" data-row="bonus">' + bonusRow + '</div>' +
+      '<div class="pl-grid" data-row="tokens">' + tokRow + '</div>' +
+      '<div class="pl-grid" data-row="nobles">' + p.nobles.map(nb => '<span class="nbl-mini">' + esc(nb.nm) + '</span>').join('') + '</div>' +
+      (p.reserved.length ? '<div class="hold">Reserved · ' + p.reserved.length + '/' + RESERVE_LIMIT + '</div>' : '') +
+      '<div class="pl-res" data-row="reserve">' + res + '</div>' +
       '</div>';
   }).join('');
 }
@@ -1115,7 +1457,7 @@ function renderOver(){
   const rows = standings();
   const top = rows[0].points, tied = rows.filter(r => r.points === top);
   $('ov-sub').innerHTML = tied.length > 1
-    ? esc(rows[0].name) + ' takes it on the tie-break — ' + rows[0].cards.length + ' cards to ' + tied[1].cards.length + '.'
+    ? esc(rows[0].name) + ' takes it on the tie-break: ' + rows[0].cards.length + ' cards to ' + tied[1].cards.length + '.'
     : esc(rows[0].name) + ' closes the books with ' + top + ' prestige.';
   $('standings').innerHTML = rows.map((p, i) =>
     '<div class="r' + (i === 0 ? ' win' : '') + '"><span class="rk">' + (i+1) + '</span>' +
@@ -1128,15 +1470,16 @@ function renderOver(){
    Events
    ═══════════════════════════════════════════════════════════ */
 $('rows').addEventListener('click', e => {
+  if(UI.busy) return;
   const act = e.target.closest('[data-do]');
   if(act && UI.selCard){
-    if(act.disabled) return;
+    if(act.disabled || !canAct()) return;
     const { id, where } = UI.selCard;
     if(act.dataset.do === 'buy') actBuy(where, id); else actReserve(where, id);
     return;
   }
   const deck = e.target.closest('[data-deck]');
-  if(deck && !deck.disabled){ actReserve('deck', deck.dataset.deck); return; }
+  if(deck){ if(!deck.disabled && canAct()) actReserve('deck', deck.dataset.deck); return; }
   const card = e.target.closest('[data-card]');
   if(card){
     const id = card.dataset.card;
@@ -1148,56 +1491,74 @@ $('rows').addEventListener('click', e => {
 
 $('bank').addEventListener('click', e => {
   const b = e.target.closest('[data-token]');
-  if(!b || b.disabled) return;
+  if(!b || b.disabled || !canAct()) return;
+  const from = rectOf(b.querySelector('.chip'));
   UI.pick.push(b.dataset.token);
   UI.selCard = null;
   render();
+  const chips = document.querySelectorAll('#tray [data-unpick] .chip');
+  flipFrom(chips[UI.pick.length - 1], from);                     /* hop from the pile into the tray */
 });
 
 $('tray').addEventListener('click', e => {
+  if(!canAct()) return;
+  const un = e.target.closest('[data-unpick]');
+  if(un){                                                         /* put one gem back */
+    const k = Number(un.dataset.unpick), g = UI.pick[k];
+    const from = rectOf(un.querySelector('.chip'));
+    UI.pick.splice(k, 1);
+    render();
+    fly(chipHTML(g, '', ''), from, rectOf(bankChip(g)), { w:34, h:34, s1:44 / 34, dur:380, arc:30 });
+    return;
+  }
   const b = e.target.closest('[data-tray]');
   if(!b || b.disabled) return;
   if(b.dataset.tray === 'clear'){ UI.pick = []; render(); return; }
-  const picks = UI.pick.slice();
-  UI.pick = [];
-  actTake(picks);
+  actTake(UI.pick.slice(), 'tray');
 });
 
 $('players').addEventListener('click', e => {
   const b = e.target.closest('[data-res]');
-  if(b && !b.disabled) actBuy('reserved', b.dataset.res);
+  if(b && !b.disabled && canAct()) actBuy('reserved', b.dataset.res);
 });
 
 $('dis-bank').addEventListener('click', e => {
   const b = e.target.closest('[data-drop]');
-  if(!b) return;
+  if(!b || !S || !S.pending || S.pending.kind !== 'discard') return;
   const p = cur(), g = b.dataset.drop;
   if(!p.tokens[g]) return;
   p.tokens[g]--; S.bank[g]++;
+  UI.bankPops.push(g);
   logMsg(p, 'returned a ' + NAME[g].toLowerCase() + ' to the bank.');
-  if(held(p) <= HAND_LIMIT){ S.pending = null; nobleStep(); } else render();
+  if(held(p) <= HAND_LIMIT){ S.pending = null; UI.busy = true; nobleStep(S); } else render();
 });
 
 $('nb-options').addEventListener('click', e => {
   const b = e.target.closest('[data-noble]');
-  if(b) takeNoble(b.dataset.noble);
+  if(b && S && S.pending && S.pending.kind === 'noble') takeNoble(b.dataset.noble, S);
 });
 
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
     if(!$('rules-modal').hidden){ $('rules-modal').hidden = true; return; }
+    if(UI.busy || !S) return;
     if(UI.selCard || UI.pick.length){ UI.selCard = null; UI.pick = []; render(); }
   }
 });
 
-/* ── rules & new game ───────────────────────────────────── */
+/* ── rules, pace & new game ─────────────────────────────── */
 const openRules = () => { $('rules-modal').hidden = false; };
 $('btn-rules').addEventListener('click', openRules);
 $('btn-rules-2').addEventListener('click', openRules);
 $('btn-rules-close').addEventListener('click', () => { $('rules-modal').hidden = true; });
 $('rules-modal').addEventListener('click', e => { if(e.target.id === 'rules-modal') $('rules-modal').hidden = true; });
+$('btn-pace').addEventListener('click', () => {
+  const order = Object.keys(SPEEDS);
+  UI.speed = order[(order.indexOf(UI.speed) + 1) % order.length];
+  savePrefs(); renderSetup();
+});
 $('btn-new').addEventListener('click', () => {
-  clearTimeout(UI.botTimer);
+  resetUI();
   S = null;
   $('table').hidden = true; $('setup').hidden = false;
   $('over-modal').hidden = true; $('discard-modal').hidden = true; $('noble-modal').hidden = true;
@@ -1221,13 +1582,13 @@ function loadPrefs(){
     if(raw){
       const o = JSON.parse(raw);
       if(Array.isArray(o.seats) && o.seats.length >= 2 && o.seats.length <= 4) setupSeats = o.seats;
-      if(o.botMs) UI.botMs = o.botMs;
+      if(o.speed && SPEEDS[o.speed]) UI.speed = o.speed;
     }
   }catch(err){ /* storage unavailable — defaults are fine */ }
   if(!setupSeats.length) setSeatCount(3);
 }
 function savePrefs(){
-  try{ localStorage.setItem('splendor.prefs', JSON.stringify({ seats:setupSeats, botMs:UI.botMs })); }
+  try{ localStorage.setItem('splendor.prefs', JSON.stringify({ seats:setupSeats, speed:UI.speed })); }
   catch(err){ /* ignore */ }
 }
 function setSeatCount(n){
@@ -1247,15 +1608,16 @@ function renderSetup(){
   $('count-seg').querySelectorAll('button').forEach(b =>
     b.setAttribute('aria-pressed', String(Number(b.dataset.n) === setupSeats.length)));
   $('speed-seg').querySelectorAll('button').forEach(b =>
-    b.setAttribute('aria-pressed', String(Number(b.dataset.ms) === UI.botMs)));
+    b.setAttribute('aria-pressed', String(b.dataset.speed === UI.speed)));
+  $('btn-pace').textContent = SPEEDS[UI.speed].label + ' pace';
 }
 $('count-seg').addEventListener('click', e => {
   const b = e.target.closest('[data-n]'); if(!b) return;
   syncNames(); setSeatCount(Number(b.dataset.n)); renderSetup();
 });
 $('speed-seg').addEventListener('click', e => {
-  const b = e.target.closest('[data-ms]'); if(!b) return;
-  UI.botMs = Number(b.dataset.ms); renderSetup();
+  const b = e.target.closest('[data-speed]'); if(!b) return;
+  UI.speed = b.dataset.speed; savePrefs(); renderSetup();
 });
 $('seats').addEventListener('click', e => {
   const b = e.target.closest('[data-seat]'); if(!b) return;
@@ -1284,21 +1646,28 @@ $('btn-start').addEventListener('click', () => {
    ═══════════════════════════════════════════════════════════ */
 function start(data){
   loadPrefs();
+  if(data && data.speed && SPEEDS[data.speed]) UI.speed = data.speed;
   renderSetup();
   if(data && data.S){
     S = data.S;
-    UI.pick = []; UI.selCard = null; UI.seen = new Set(marketCards().map(c => c.id));
-    if(data.botMs) UI.botMs = data.botMs;
+    resetUI();
+    UI.seen = new Set(marketCards().map(c => c.id));
+    S.players.forEach(p => UI.lastPts[p.i] = p.points);
+    UI.lastCur = S.cur;
     render();
-    if(!S.over && !S.pending && cur().bot) scheduleBot();
+    if(!S.over && cur().bot){
+      if(S.pending && S.pending.kind === 'discard') botDiscard(S);
+      else if(!S.pending) scheduleBot();
+    }
   }
 }
 if(window.claude && window.claude.hot){
-  window.claude.hot.snapshot(() => ({ S, botMs: UI.botMs }));
+  window.claude.hot.snapshot(() => ({ S, speed: UI.speed }));
   window.claude.hot.ready ? window.claude.hot.ready(start) : start(window.claude.hot.data || {});
 } else {
   start({});
 }
+
 </script>
 
 </body>

@@ -57,6 +57,27 @@ cost may differ from the physical cards; play balance does not.
 Card names ("Lapis mine", "Sable treasury vault") are flavour, not from the original —
 the printed cards carry illustrations rather than names.
 
+## Motion
+
+Every move travels across the table, and the state only changes once it lands:
+
+- **Picking gems:** each one hops from its pile into your tray. Tap a tray gem to
+  send it back.
+- **Taking gems:** they arc from the tray into your purse, one after another.
+- **Buying a card:** it lifts from the market and flies to your bonuses while your
+  payment arcs back into the bank. A replacement deals out of the deck.
+- **Reserving:** the card flies into your hand along with its gold. A bot's reserve
+  flips face down in mid-air.
+- **Nobles:** the tile travels from the gallery to the merchant who earned it.
+- Stacks pop as gems land, and prestige counters jump when they rise.
+
+**Bots get the same treatment.** On its turn a bot first shows what it is reaching
+for, with a garnet ring on the piles or the card it chose and a caption in the turn bar.
+Then its move plays out with the same flights as yours, so you can follow every turn.
+**Pace** (Brisk, Measured or Deliberate, set at setup or from the top bar) scales
+both the animations and the bots' thinking time. With *reduce motion* switched on
+in the system settings, the flights are skipped, but bots still pause between moves.
+
 ## The bots
 
 Each bot scores every legal action and takes the best, with a little noise so games
