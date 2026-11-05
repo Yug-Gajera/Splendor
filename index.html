@@ -1,0 +1,1270 @@
+<title>Splendor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: a jeweler's tray — tiered card rows fill the left, the bank and merchant ledgers run down a right rail; one column on phones. */
+:root{
+  --bg:#F2EDE3; --veil:#E8E0D1;
+  --surface:#FFFDF8; --surface-2:#F1EADD; --surface-3:#E4D9C5;
+  --ink:#231E17; --ink-soft:#6C6153; --ink-faint:#9C9080;
+  --line:#DCD0BA; --line-strong:#C2B298;
+  --gold:#9B6E20; --gold-bright:#C4902C; --gold-veil:#F7E9C6;
+  --garnet:#7A2340;
+  --shadow-1:0 1px 2px rgba(63,47,20,.12);
+  --shadow-2:0 2px 4px rgba(63,47,20,.10), 0 14px 28px -18px rgba(63,47,20,.45);
+  --radius:12px;
+  --display:'Marcellus', 'Hoefler Text', Georgia, serif;
+  --ui:'Jost', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+
+  --d-1:#C6CED8; --d-2:#FFFFFF; --d-ink:#2A3340; --d-edge:#A9B4C2;
+  --s-1:#1A47B6; --s-2:#79A9F7; --s-ink:#F3F8FF; --s-edge:#143a97;
+  --e-1:#0C7850; --e-2:#5BD8A0; --e-ink:#EFFFF8; --e-edge:#0a5e3f;
+  --r-1:#B01230; --r-2:#F4717F; --r-ink:#FFF2F4; --r-edge:#8c0e26;
+  --o-1:#23242C; --o-2:#60636F; --o-ink:#F4F5F9; --o-edge:#14151b;
+  --w-1:#9C6A12; --w-2:#F0C24A; --w-ink:#3A2605; --w-edge:#855c10;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0F1220; --veil:#151932;
+  --surface:#1B2034; --surface-2:#232942; --surface-3:#2E3658;
+  --ink:#EDE8DC; --ink-soft:#A8A294; --ink-faint:#7B7566;
+  --line:#333A5C; --line-strong:#4A5486;
+  --gold:#D9A63C; --gold-bright:#F2CD69; --gold-veil:#3C3115;
+  --garnet:#E894AE;
+  --shadow-1:0 1px 2px rgba(0,0,0,.5);
+  --shadow-2:0 2px 4px rgba(0,0,0,.4), 0 16px 32px -20px rgba(0,0,0,.9);
+  --d-1:#B9C3D1; --d-2:#FFFFFF; --d-ink:#1E2632; --d-edge:#8e9bad;
+  color-scheme:dark;
+} }
+:root[data-theme="dark"]{
+  --bg:#0F1220; --veil:#151932;
+  --surface:#1B2034; --surface-2:#232942; --surface-3:#2E3658;
+  --ink:#EDE8DC; --ink-soft:#A8A294; --ink-faint:#7B7566;
+  --line:#333A5C; --line-strong:#4A5486;
+  --gold:#D9A63C; --gold-bright:#F2CD69; --gold-veil:#3C3115;
+  --garnet:#E894AE;
+  --shadow-1:0 1px 2px rgba(0,0,0,.5);
+  --shadow-2:0 2px 4px rgba(0,0,0,.4), 0 16px 32px -20px rgba(0,0,0,.9);
+  --d-1:#B9C3D1; --d-2:#FFFFFF; --d-ink:#1E2632; --d-edge:#8e9bad;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{
+  background:
+    radial-gradient(1200px 700px at 15% -10%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 70%),
+    radial-gradient(900px 600px at 100% 0%, color-mix(in srgb, var(--garnet) 8%, transparent), transparent 70%),
+    var(--bg);
+  color:var(--ink); font-family:var(--ui); font-size:15px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  max-width:1420px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:0 40px;
+}
+h1,h2,h3{font-family:var(--display); font-weight:400; text-wrap:balance; margin:0}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible, [tabindex]:focus-visible{outline:2px solid var(--gold-bright); outline-offset:2px}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ── top bar ───────────────────────────────── */
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:30; background:var(--bg)}
+.topbar{
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding-block:12px; margin-bottom:14px;
+  background:linear-gradient(var(--bg) 70%, transparent);
+}
+.brand{display:flex; align-items:center; gap:10px; min-width:0}
+.mark{width:26px; height:26px; flex:none; transform:rotate(45deg); border-radius:4px;
+  background:linear-gradient(135deg, var(--gold-bright), var(--garnet) 60%, var(--s-1));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4), var(--shadow-1)}
+.brand-name{font-family:var(--display); font-size:26px; letter-spacing:.055em; text-transform:uppercase; line-height:1}
+.brand-sub{color:var(--ink-faint); font-size:12.5px; letter-spacing:.04em}
+.topbar .spacer{flex:1}
+.btn{
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink);
+  padding:8px 14px; border-radius:999px; font-size:13.5px; letter-spacing:.02em;
+  transition:background .15s, border-color .15s, transform .12s;
+}
+.btn:hover{border-color:var(--gold); background:var(--surface-2)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(var(--gold-bright), var(--gold)); border-color:var(--gold); color:#2A1C04; font-weight:600}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn[disabled]{opacity:.4; cursor:not-allowed; transform:none}
+.btn.sm{padding:5px 11px; font-size:12.5px}
+
+/* ── gem chips ─────────────────────────────── */
+.chip{
+  --size:34px; --c1:var(--o-1); --c2:var(--o-2); --ci:var(--o-ink); --ce:var(--o-edge);
+  position:relative; width:var(--size); height:var(--size); flex:none; border-radius:50%;
+  background:radial-gradient(circle at 34% 26%, var(--c2), var(--c1) 68%);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ce) 80%, transparent),
+             inset 0 -2px 5px color-mix(in srgb, var(--ce) 65%, transparent),
+             inset 0 2px 3px rgba(255,255,255,.3), var(--shadow-1);
+  color:var(--ci); display:grid; place-items:center;
+  font-size:calc(var(--size) * .44); font-weight:600; font-variant-numeric:tabular-nums;
+  line-height:1; letter-spacing:-.01em;
+}
+.chip::after{
+  content:""; position:absolute; left:16%; top:12%; width:34%; height:24%; border-radius:50%;
+  background:linear-gradient(rgba(255,255,255,.75), rgba(255,255,255,0)); pointer-events:none;
+}
+.chip[data-gem="diamond"]{--c1:var(--d-1); --c2:var(--d-2); --ci:var(--d-ink); --ce:var(--d-edge)}
+.chip[data-gem="sapphire"]{--c1:var(--s-1); --c2:var(--s-2); --ci:var(--s-ink); --ce:var(--s-edge)}
+.chip[data-gem="emerald"]{--c1:var(--e-1); --c2:var(--e-2); --ci:var(--e-ink); --ce:var(--e-edge)}
+.chip[data-gem="ruby"]{--c1:var(--r-1); --c2:var(--r-2); --ci:var(--r-ink); --ce:var(--r-edge)}
+.chip[data-gem="onyx"]{--c1:var(--o-1); --c2:var(--o-2); --ci:var(--o-ink); --ce:var(--o-edge)}
+.chip[data-gem="gold"]{--c1:var(--w-1); --c2:var(--w-2); --ci:var(--w-ink); --ce:var(--w-edge)}
+.chip.sm{--size:20px}
+.chip.xs{--size:17px}
+.chip.lg{--size:44px}
+.chip.flat{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ce) 70%, transparent), inset 0 -1px 3px color-mix(in srgb, var(--ce) 50%, transparent)}
+
+/* ── table layout ──────────────────────────── */
+.table{display:grid; grid-template-columns:minmax(0,1fr) 352px; gap:18px; align-items:start}
+@media (max-width:1040px){ .table{grid-template-columns:minmax(0,1fr)} }
+.board{display:flex; flex-direction:column; gap:12px; min-width:0}
+.rail{display:flex; flex-direction:column; gap:12px; min-width:0}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:13px; box-shadow:var(--shadow-1)}
+.panel-title{
+  font-family:var(--ui); font-size:10.5px; font-weight:600; letter-spacing:.17em; text-transform:uppercase;
+  color:var(--ink-faint); margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.panel-title::after{content:""; height:1px; flex:1; background:var(--line)}
+
+/* ── turn banner ───────────────────────────── */
+.turnbar{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:11px 15px; border-radius:var(--radius);
+  background:linear-gradient(color-mix(in srgb, var(--gold-veil) 70%, var(--surface)), var(--surface));
+  border:1px solid var(--line); box-shadow:var(--shadow-1);
+}
+.turnbar .who{font-family:var(--display); font-size:19px; display:flex; align-items:center; gap:9px}
+.turnbar .hint{color:var(--ink-soft); font-size:13px; min-width:0}
+.turnbar .spacer{flex:1}
+.pip{width:10px; height:10px; border-radius:50%; background:var(--gold-bright); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 25%, transparent)}
+.pip.thinking{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35; transform:scale(.8)}}
+.badge{font-size:11px; letter-spacing:.09em; text-transform:uppercase; padding:3px 9px; border-radius:999px;
+  border:1px solid var(--garnet); color:var(--garnet); font-weight:600}
+
+/* ── nobles ────────────────────────────────── */
+.nobles{display:flex; gap:10px; flex-wrap:wrap}
+.noble{
+  position:relative; flex:1 1 150px; min-width:0; display:flex; gap:10px; align-items:center;
+  padding:9px 11px; border-radius:10px; background:var(--surface);
+  border:1px solid var(--line); box-shadow:var(--shadow-1);
+}
+.noble::before{content:""; position:absolute; inset:0; border-radius:10px; pointer-events:none;
+  background:linear-gradient(135deg, color-mix(in srgb, var(--gold) 12%, transparent), transparent 55%)}
+.noble.ready{border-color:var(--gold-bright); box-shadow:0 0 0 2px color-mix(in srgb, var(--gold-bright) 35%, transparent), var(--shadow-1)}
+.noble .pts{font-family:var(--display); font-size:25px; line-height:1; color:var(--gold); flex:none}
+.noble .body{min-width:0}
+.noble .nm{font-family:var(--display); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink)}
+.noble .req{display:flex; gap:4px; margin-top:4px}
+.noble .req .chip{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ce) 70%, transparent)}
+
+/* ── card rows ─────────────────────────────── */
+.row{display:grid; grid-template-columns:62px repeat(4, minmax(0,1fr)); gap:10px; align-items:stretch}
+@media (max-width:620px){ .row{grid-template-columns:44px repeat(4, minmax(0,1fr)); gap:6px} }
+.deck{
+  position:relative; border-radius:10px; border:1px solid var(--line-strong);
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--garnet) 14%, transparent) 0 6px, transparent 6px 12px),
+    linear-gradient(160deg, var(--surface-3), var(--surface-2));
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  box-shadow:var(--shadow-1), 2px 2px 0 -1px var(--line), 4px 4px 0 -2px var(--line);
+  transition:transform .14s, box-shadow .14s;
+}
+.deck:not([disabled]):hover{transform:translateY(-2px); border-color:var(--gold)}
+.deck .lvl{font-family:var(--display); font-size:17px; line-height:1; color:var(--ink)}
+.deck .cnt{font-size:10.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.deck[disabled]{opacity:.45; cursor:not-allowed}
+
+.slot{min-width:0; position:relative; display:flex}
+.slot.empty{border:1px dashed var(--line); border-radius:10px; min-height:118px}
+.card{
+  position:relative; width:100%; text-align:left; display:grid; grid-template-rows:auto 1fr auto;
+  border-radius:10px; border:1px solid var(--line); background:var(--surface);
+  box-shadow:var(--shadow-1); overflow:hidden; padding:0;
+  transition:transform .16s cubic-bezier(.2,.8,.3,1), box-shadow .16s, border-color .16s;
+}
+.card{height:100%; min-height:134px}
+.card:hover{transform:translateY(-3px); box-shadow:var(--shadow-2)}
+.card.enter{animation:deal .34s cubic-bezier(.2,.8,.3,1) both}
+@keyframes deal{from{opacity:0; transform:translateY(-10px) scale(.96)}}
+.card.buyable{border-color:var(--gold-bright); box-shadow:0 0 0 2px color-mix(in srgb, var(--gold-bright) 30%, transparent), var(--shadow-1)}
+.card.sel{border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 55%, transparent), var(--shadow-2); transform:translateY(-3px)}
+.card .crown{
+  display:flex; align-items:center; justify-content:space-between; gap:6px; padding:7px 8px 6px;
+  background:linear-gradient(150deg, color-mix(in srgb, var(--c1) 26%, var(--surface)), color-mix(in srgb, var(--c1) 8%, var(--surface)));
+  border-bottom:1px solid color-mix(in srgb, var(--c1) 30%, var(--line));
+}
+.card[data-gem="diamond"]{--c1:var(--d-1)} .card[data-gem="sapphire"]{--c1:var(--s-1)}
+.card[data-gem="emerald"]{--c1:var(--e-1)} .card[data-gem="ruby"]{--c1:var(--r-1)}
+.card[data-gem="onyx"]{--c1:var(--o-1)}
+.card .pts{font-family:var(--display); font-size:27px; line-height:.9; color:var(--ink); min-width:14px}
+.card .pts.zero{color:var(--ink-faint); font-size:15px}
+.card .face{padding:8px 8px 4px; min-height:26px}
+.card .mine{font-size:10px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.card .costs{display:flex; flex-wrap:wrap; gap:4px; padding:7px 8px 9px}
+.card .cost-i{position:relative}
+.card .cost-i.short::after{content:""; position:absolute; inset:-2px; border-radius:50%; border:1.5px dashed color-mix(in srgb, var(--garnet) 70%, transparent)}
+@media (max-width:620px){
+  .card{min-height:104px}
+  .card .pts{font-size:21px} .card .face{display:none} .card .costs{gap:3px; padding:5px 5px 7px}
+  .card .crown{padding:5px 5px 4px}
+}
+.cardact{
+  position:absolute; inset:auto 0 0 0; display:flex; gap:5px; padding:6px;
+  background:linear-gradient(transparent, color-mix(in srgb, var(--surface) 92%, transparent) 30%, var(--surface));
+}
+.cardact .btn{flex:1; padding:6px 4px; font-size:12px; text-align:center}
+
+/* ── bank ──────────────────────────────────── */
+.bank{display:flex; gap:9px; flex-wrap:wrap}
+.tokbtn{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:none; border:0; padding:3px; border-radius:10px; transition:transform .13s, background .13s;
+}
+.tokbtn:not([disabled]):hover{transform:translateY(-3px); background:var(--surface-2)}
+.tokbtn[disabled]{opacity:.32; cursor:not-allowed}
+.tokbtn .n{font-size:11.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums; letter-spacing:.03em}
+.tokbtn.picked .chip{box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 60%, transparent), var(--shadow-1)}
+.tray{margin-top:12px; padding-top:11px; border-top:1px solid var(--line); display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.tray .slots{display:flex; gap:6px}
+.tray .hole{width:28px; height:28px; border-radius:50%; border:1.5px dashed var(--line-strong)}
+.tray .msg{flex:1 1 130px; font-size:12.5px; color:var(--ink-soft); min-width:0}
+
+/* ── players ───────────────────────────────── */
+.players{display:flex; flex-direction:column; gap:9px}
+.pl{border:1px solid var(--line); border-radius:10px; background:var(--surface-2); padding:10px; transition:border-color .2s}
+.pl.turn{border-color:var(--gold-bright); background:linear-gradient(color-mix(in srgb, var(--gold-veil) 55%, var(--surface-2)), var(--surface-2))}
+.pl-head{display:flex; align-items:baseline; gap:8px}
+.pl-name{font-family:var(--display); font-size:16px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pl-tag{font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); border:1px solid var(--line-strong); border-radius:999px; padding:1px 6px}
+.pl-pts{font-family:var(--ui); font-weight:600; font-size:21px; line-height:1; color:var(--gold); font-variant-numeric:tabular-nums}
+.pl-pts small{font-family:var(--ui); font-size:10px; letter-spacing:.1em; color:var(--ink-faint); text-transform:uppercase}
+.pl-grid{display:flex; gap:5px; flex-wrap:wrap; margin-top:9px}
+.stack{position:relative; display:flex; align-items:center; gap:3px; padding:2px 6px 2px 2px; border-radius:999px; background:var(--surface); border:1px solid var(--line)}
+.stack b{font-size:12px; font-variant-numeric:tabular-nums; font-weight:600}
+.stack .tk{color:var(--ink-faint); font-size:11px}
+.pl-res{display:flex; gap:6px; margin-top:9px; flex-wrap:wrap}
+.minicard{position:relative; width:52px; border-radius:7px; overflow:hidden; border:1px solid var(--line); background:var(--surface); padding:0; text-align:left}
+.minicard .mc-top{display:flex; justify-content:space-between; align-items:center; padding:3px 4px;
+  background:color-mix(in srgb, var(--c1) 22%, var(--surface)); border-bottom:1px solid color-mix(in srgb, var(--c1) 28%, var(--line))}
+.minicard[data-gem="diamond"]{--c1:var(--d-1)} .minicard[data-gem="sapphire"]{--c1:var(--s-1)}
+.minicard[data-gem="emerald"]{--c1:var(--e-1)} .minicard[data-gem="ruby"]{--c1:var(--r-1)}
+.minicard[data-gem="onyx"]{--c1:var(--o-1)}
+.minicard .mc-p{font-family:var(--display); font-size:13px; line-height:1}
+.minicard .mc-cost{display:flex; flex-wrap:wrap; gap:2px; padding:3px}
+.minicard.back{height:46px; width:40px; border-color:var(--line-strong);
+  background:repeating-linear-gradient(135deg, color-mix(in srgb, var(--garnet) 16%, transparent) 0 5px, transparent 5px 10px),
+             linear-gradient(160deg, var(--surface-3), var(--surface-2))}
+.minicard.buyable{border-color:var(--gold-bright); box-shadow:0 0 0 2px color-mix(in srgb, var(--gold-bright) 32%, transparent)}
+.minicard.sel{box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 60%, transparent)}
+.hold{font-size:11px; color:var(--ink-faint); letter-spacing:.06em; text-transform:uppercase; margin-top:8px}
+.nbl-mini{display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:1px 7px}
+
+/* ── ledger ────────────────────────────────── */
+.log-panel{max-height:290px; display:flex; flex-direction:column}
+.log{list-style:none; margin:0; padding:0 2px 0 0; overflow-y:auto; display:flex; flex-direction:column; gap:7px; font-size:12.5px}
+.log li{display:flex; gap:7px; align-items:flex-start; color:var(--ink-soft); padding-bottom:7px; border-bottom:1px dotted var(--line)}
+.log li:last-child{border-bottom:0}
+.log .t{color:var(--ink-faint); font-variant-numeric:tabular-nums; font-size:11px; flex:none; width:22px; text-align:right}
+.log .msg{min-width:0}
+.log b{color:var(--ink); font-weight:600}
+.log .inline{display:inline-flex; gap:2px; vertical-align:-3px; margin:0 2px}
+
+/* ── overlays ──────────────────────────────── */
+.overlay{position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:18px;
+  background:color-mix(in srgb, var(--bg) 78%, #000); backdrop-filter:blur(3px)}
+.sheet{width:min(560px, 100%); max-height:86vh; overflow-y:auto; background:var(--surface); border:1px solid var(--line-strong);
+  border-radius:16px; box-shadow:var(--shadow-2); padding:22px}
+.sheet h2{font-size:24px; margin-bottom:4px}
+.sheet .sub{color:var(--ink-soft); font-size:13px; margin-bottom:16px}
+.sheet h3{font-size:14px; font-family:var(--ui); font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin:18px 0 7px}
+.sheet p, .sheet li{color:var(--ink-soft); font-size:13.5px}
+.sheet ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:5px}
+.sheet .foot{display:flex; gap:9px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap}
+
+/* ── setup ─────────────────────────────────── */
+.setup{max-width:620px; margin:4vh auto 0}
+.setup .lede{color:var(--ink-soft); font-size:14px; margin:6px 0 20px}
+.seg{display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap}
+.seg button{border:1px solid var(--line-strong); background:var(--surface); border-radius:999px; padding:7px 16px; font-size:13.5px}
+.seg button[aria-pressed="true"]{background:linear-gradient(var(--gold-bright), var(--gold)); border-color:var(--gold); color:#2A1C04; font-weight:600}
+.seats{display:flex; flex-direction:column; gap:8px; margin-bottom:6px}
+.seat{display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2); flex-wrap:wrap}
+.seat .idx{font-family:var(--display); color:var(--gold); font-size:15px; width:16px; flex:none}
+.seat input{flex:1 1 110px; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:7px; padding:6px 9px; font:inherit; color:var(--ink)}
+.seat .toggle{display:flex; gap:3px; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:2px}
+.seat .toggle button{border:0; background:none; border-radius:999px; padding:4px 11px; font-size:12px; color:var(--ink-soft)}
+.seat .toggle button[aria-pressed="true"]{background:var(--surface-3); color:var(--ink); font-weight:600}
+.field-label{font-size:10.5px; font-weight:600; letter-spacing:.17em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:8px}
+
+/* ── results ───────────────────────────────── */
+.stand{display:flex; flex-direction:column; gap:7px; margin-top:4px}
+.stand .r{display:flex; align-items:center; gap:11px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2)}
+.stand .r.win{border-color:var(--gold-bright); background:linear-gradient(color-mix(in srgb, var(--gold-veil) 60%, var(--surface-2)), var(--surface-2))}
+.stand .rk{font-family:var(--display); font-size:20px; color:var(--gold); width:24px; flex:none}
+.stand .nm{flex:1; font-family:var(--display); font-size:16px; min-width:0}
+.stand .sc{font-family:var(--display); font-size:22px}
+.stand .de{font-size:11.5px; color:var(--ink-faint)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)}
+@media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important} }
+</style>
+
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span>
+        <span class="brand-name">Splendor</span><br>
+        <span class="brand-sub" id="brand-sub">Renaissance gem merchants · first to 15 prestige</span>
+      </span>
+    </div>
+    <span class="spacer"></span>
+    <div class="topbar-actions">
+      <button class="btn" id="btn-rules">Rules</button>
+      <button class="btn" id="btn-new">New game</button>
+    </div>
+  </header>
+
+  <!-- ── setup ───────────────────────────── -->
+  <section class="setup" id="setup">
+    <h1 style="font-size:34px">Open your trading house</h1>
+    <p class="lede">Buy mines and caravans with gems, earn the bonuses that make the next purchase cheaper, and attract the nobles watching from the gallery. First merchant to 15 prestige points triggers the final round.</p>
+
+    <div class="field-label">Merchants at the table</div>
+    <div class="seg" id="count-seg" role="group" aria-label="Number of players">
+      <button type="button" data-n="2" aria-pressed="false">2 players</button>
+      <button type="button" data-n="3" aria-pressed="true">3 players</button>
+      <button type="button" data-n="4" aria-pressed="false">4 players</button>
+    </div>
+
+    <div class="field-label">Seats</div>
+    <div class="seats" id="seats"></div>
+
+    <div class="field-label" style="margin-top:18px">Pace of the bots</div>
+    <div class="seg" id="speed-seg" role="group" aria-label="Bot speed">
+      <button type="button" data-ms="320" aria-pressed="false">Brisk</button>
+      <button type="button" data-ms="750" aria-pressed="true">Measured</button>
+      <button type="button" data-ms="1400" aria-pressed="false">Deliberate</button>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap">
+      <button class="btn primary" id="btn-start" style="padding:11px 24px">Deal the cards</button>
+      <button class="btn" id="btn-rules-2" style="padding:11px 20px">How it plays</button>
+    </div>
+  </section>
+
+  <!-- ── table ───────────────────────────── -->
+  <main class="table" id="table" hidden>
+    <section class="board">
+      <div class="turnbar" id="turnbar"></div>
+      <div class="nobles" id="nobles"></div>
+      <div id="rows" style="display:flex; flex-direction:column; gap:10px"></div>
+    </section>
+    <aside class="rail">
+      <div class="panel">
+        <h2 class="panel-title">The bank</h2>
+        <div class="bank" id="bank"></div>
+        <div class="tray" id="tray"></div>
+      </div>
+      <div class="panel">
+        <h2 class="panel-title">Merchants</h2>
+        <div class="players" id="players"></div>
+      </div>
+      <div class="panel log-panel">
+        <h2 class="panel-title">Ledger</h2>
+        <ol class="log" id="log"></ol>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<!-- ── modals ───────────────────────────── -->
+<div class="overlay" id="rules-modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rules-h">
+    <h2 id="rules-h">How Splendor plays</h2>
+    <p class="sub">One action per turn. Nothing else.</p>
+
+    <h3>Your turn — pick exactly one</h3>
+    <ul>
+      <li><b>Take 3 gems</b> of three different colours.</li>
+      <li><b>Take 2 gems</b> of the same colour — only if that pile still holds 4 or more.</li>
+      <li><b>Reserve a card</b> from the table or the top of a deck, and take 1 gold with it if any is left. Three reserved cards at most.</li>
+      <li><b>Buy a card</b> from the table or from your reserve.</li>
+    </ul>
+
+    <h3>Paying for cards</h3>
+    <ul>
+      <li>Every card you own gives a permanent <b>bonus</b> of its gem: a discount of one gem on every future purchase, and it is never spent.</li>
+      <li><b>Gold</b> is a joker — each one covers a single gem of any colour.</li>
+      <li>Gems you spend go back to the bank for everyone to take again.</li>
+    </ul>
+
+    <h3>Gold, limits and nobles</h3>
+    <ul>
+      <li>Gold can only be gained by reserving a card, never taken on its own.</li>
+      <li>You may hold <b>10 gems at most</b>. Over the limit at the end of your turn, you return gems until you are back to 10.</li>
+      <li>A <b>noble</b> comes to you the moment your bonuses meet their requirement — automatically, and at most one per turn. Each is worth 3 prestige.</li>
+    </ul>
+
+    <h3>Ending the game</h3>
+    <ul>
+      <li>When a merchant reaches <b>15 prestige</b>, the round is played out so everyone has had the same number of turns.</li>
+      <li>Most prestige wins. On a tie, the merchant who bought <b>fewer development cards</b> takes it.</li>
+    </ul>
+    <div class="foot"><button class="btn primary" id="btn-rules-close">Back to the table</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="discard-modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dis-h">
+    <h2 id="dis-h">Over the limit</h2>
+    <p class="sub" id="dis-sub"></p>
+    <div class="bank" id="dis-bank" style="margin-bottom:6px"></div>
+    <p class="sub" id="dis-hint" style="margin:14px 0 0">Click a gem to hand it back to the bank.</p>
+  </div>
+</div>
+
+<div class="overlay" id="noble-modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="nb-h">
+    <h2 id="nb-h">Two nobles are interested</h2>
+    <p class="sub">Only one may visit you this turn. Choose.</p>
+    <div class="nobles" id="nb-options"></div>
+  </div>
+</div>
+
+<div class="overlay" id="over-modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ov-h">
+    <h2 id="ov-h">Final accounts</h2>
+    <p class="sub" id="ov-sub"></p>
+    <div class="stand" id="standings"></div>
+    <div class="foot">
+      <button class="btn" id="btn-over-review">Review the table</button>
+      <button class="btn primary" id="btn-over-again">Play again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════
+   Splendor — rules engine
+   ═══════════════════════════════════════════════════════════ */
+const GEMS = ['diamond','sapphire','emerald','ruby','onyx'];
+const NAME = {diamond:'Diamond', sapphire:'Sapphire', emerald:'Emerald', ruby:'Ruby', onyx:'Onyx', gold:'Gold'};
+const WIN = 15, HAND_LIMIT = 10, RESERVE_LIMIT = 3;
+
+/* Development-card cost shapes, by tier. Offsets are steps along the gem
+   wheel from the card's own bonus gem, so each tier's 8 / 6 / 4 shapes are
+   dealt once per colour: 40 + 30 + 20 = 90 cards. */
+const SHAPES = {
+  1: [ {p:0,c:{1:1,2:1,3:1,4:1}}, {p:0,c:{1:1,2:2,3:1,4:1}}, {p:0,c:{1:2,2:2,4:1}}, {p:0,c:{0:1,3:1,4:3}},
+       {p:0,c:{3:2,4:1}},         {p:0,c:{1:2,3:2}},          {p:0,c:{3:3}},         {p:1,c:{2:4}} ],
+  2: [ {p:1,c:{1:3,2:2,3:2}},     {p:1,c:{2:3,3:3,4:2}},      {p:2,c:{1:4,2:2,3:1}},
+       {p:2,c:{3:5}},             {p:2,c:{2:5,3:3}},          {p:3,c:{1:6}} ],
+  3: [ {p:3,c:{1:3,2:3,3:5,4:3}}, {p:4,c:{1:7}},              {p:4,c:{1:6,2:3,3:3}}, {p:5,c:{1:7,2:3}} ]
+};
+const TRADE = {
+  diamond:['Alum pit','Salt road','Glass furnace','Chalk quarry','Pearl divers','Lime kiln','Ice cellar','White marble'],
+  sapphire:['Lapis mine','Indigo vats','Cobalt kiln','Dye wharf','Azure guild','Woad fields','Cold forge','Sea charter'],
+  emerald:['Terrace vineyard','Olive press','Copper seam','Herb garden','Verdigris shop','Beryl mine','Spice barge','Green cloister'],
+  ruby:['Cinnabar mine','Madder fields','Iron bloomery','Garnet seam','Red kiln','Vermilion shop','Coral boat','Furnace row'],
+  onyx:['Coal cut','Jet seam','Ink works','Charcoal yard','Bitumen pit','Obsidian edge','Black foundry','Night caravan']
+};
+const GEM_ADJ = {diamond:'Alabaster', sapphire:'Azure', emerald:'Verdant', ruby:'Scarlet', onyx:'Sable'};
+const L2 = ['merchant guild','trade house','river wharf','counting room','great forge','caravanserai'];
+const L3 = ['royal charter','treasury vault','grand bourse','ducal palace'];
+function cardName(gem, lvl, i){
+  if(lvl === 1) return TRADE[gem][i % TRADE[gem].length];
+  const noun = (lvl === 2 ? L2 : L3)[i % (lvl === 2 ? L2.length : L3.length)];
+  return GEM_ADJ[gem] + ' ' + noun;
+}
+
+const NOBLES = [
+  {nm:'Isabella of Castile',    req:{diamond:4, onyx:4}},
+  {nm:"Catherine de' Medici",   req:{diamond:4, sapphire:4}},
+  {nm:'Anne of Brittany',       req:{sapphire:4, emerald:4}},
+  {nm:'Charles the Fifth',      req:{emerald:4, ruby:4}},
+  {nm:'Suleiman the Magnificent',req:{ruby:4, onyx:4}},
+  {nm:'Niccolò Machiavelli',    req:{diamond:3, sapphire:3, emerald:3}},
+  {nm:'Mary Stuart',            req:{diamond:3, sapphire:3, onyx:3}},
+  {nm:'Elisabeth of Austria',   req:{sapphire:3, emerald:3, ruby:3}},
+  {nm:'Henry the Eighth',       req:{emerald:3, ruby:3, onyx:3}},
+  {nm:"Lorenzo de' Medici",     req:{diamond:3, ruby:3, onyx:3}}
+];
+
+const rnd = n => Math.floor(Math.random()*n);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const zero = () => ({diamond:0, sapphire:0, emerald:0, ruby:0, onyx:0, gold:0});
+
+function buildDecks(){
+  const decks = {1:[],2:[],3:[]};
+  let id = 0;
+  for(const lvl of [1,2,3]){
+    GEMS.forEach((gem, gi) => {
+      SHAPES[lvl].forEach((sh, si) => {
+        const cost = {};
+        for(const off in sh.c) cost[ GEMS[(gi + Number(off)) % 5] ] = sh.c[off];
+        decks[lvl].push({ id:'c'+(id++), level:lvl, gem, points:sh.p, cost,
+                          nm: cardName(gem, lvl, si) });
+      });
+    });
+    shuffle(decks[lvl]);
+  }
+  return decks;
+}
+
+let S = null;                 /* game state */
+let UI = { selCard:null, pick:[], seen:new Set(), botTimer:null, botMs:750 };
+
+function newGame(seats){
+  const n = seats.length;
+  const per = n === 2 ? 4 : n === 3 ? 5 : 7;
+  const bank = zero();
+  GEMS.forEach(g => bank[g] = per);
+  bank.gold = 5;
+  const decks = buildDecks();
+  const market = {1:[],2:[],3:[]};
+  for(const lvl of [1,2,3]) for(let i=0;i<4;i++) market[lvl].push(decks[lvl].pop() || null);
+
+  S = {
+    bank, decks, market,
+    nobles: shuffle(NOBLES.slice()).slice(0, n+1).map((x,i)=>({ id:'n'+i, nm:x.nm, req:x.req, points:3 })),
+    players: seats.map((s,i) => ({
+      i, name: s.name || ('Merchant '+(i+1)), bot: s.bot,
+      tokens: zero(), bonuses: {diamond:0,sapphire:0,emerald:0,ruby:0,onyx:0},
+      cards: [], reserved: [], nobles: [], points: 0
+    })),
+    cur: 0, round: 1, endAfterRound: false, over: false,
+    pending: null,           /* {kind:'discard'} | {kind:'noble', ids:[]} */
+    log: [], seq: 0
+  };
+  UI.selCard = null; UI.pick = []; UI.seen = new Set();
+  logMsg(null, 'The market opens. ' + n + ' merchants, ' + (n+1) + ' nobles watching.');
+}
+
+const cur = () => S.players[S.cur];
+const held = p => GEMS.reduce((s,g)=>s+p.tokens[g], 0) + p.tokens.gold;
+const marketCards = () => [1,2,3].flatMap(l => S.market[l].filter(Boolean));
+
+function logMsg(p, msg){
+  S.seq++;
+  S.log.unshift({ n:S.seq, who: p ? p.name : null, msg });
+  if(S.log.length > 60) S.log.pop();
+}
+
+/* ── payment ────────────────────────────────────────────── */
+function priceFor(p, card){
+  const pay = zero(); let gold = 0;
+  for(const g of GEMS){
+    const need = Math.max(0, (card.cost[g]||0) - p.bonuses[g]);
+    const use = Math.min(need, p.tokens[g]);
+    pay[g] = use;
+    gold += need - use;
+  }
+  if(gold > p.tokens.gold) return null;
+  pay.gold = gold;
+  return pay;
+}
+const canBuy = (p, card) => !!card && !!priceFor(p, card);
+
+/* shortfall in gems (ignoring gold) a player still needs for a card */
+function missing(p, card){
+  const per = {}; let total = 0;
+  for(const g of GEMS){
+    const m = Math.max(0, (card.cost[g]||0) - p.bonuses[g] - p.tokens[g]);
+    per[g] = m; total += m;
+  }
+  return { per, total };
+}
+
+/* ── token actions ──────────────────────────────────────── */
+const openColors = () => GEMS.filter(g => S.bank[g] > 0);
+
+function pickValid(pick){
+  if(pick.length === 0) return { ok:false, why:'Pick gems from the bank, or choose a card.' };
+  const uniq = [...new Set(pick)];
+  if(uniq.length < pick.length){
+    if(pick.length === 2 && S.bank[pick[0]] >= 4) return { ok:true, why:'Take 2 ' + NAME[pick[0]].toLowerCase() + '.' };
+    return { ok:false, why:'Two of one colour needs 4 or more left in that pile.' };
+  }
+  const want = Math.min(3, openColors().length);
+  if(pick.length === want) return { ok:true, why:'Take ' + pick.length + ' different gems.' };
+  return { ok:false, why:'Take ' + want + ' different colours' + (want < 3 ? ' — all that is left.' : '.') };
+}
+
+function canAddPick(g){
+  if(S.bank[g] <= 0) return false;
+  if(UI.pick.includes(g)) return UI.pick.length === 1 && S.bank[g] >= 4;
+  if(UI.pick.length >= 3) return false;
+  if(UI.pick.length === 2 && UI.pick[0] === UI.pick[1]) return false;
+  return true;
+}
+
+function actTake(pick){
+  const p = cur();
+  pick.forEach(g => { S.bank[g]--; p.tokens[g]++; });
+  const counts = {};
+  pick.forEach(g => counts[g] = (counts[g]||0)+1);
+  logMsg(p, 'took ' + gemsInline(counts) + '.');
+  endTurn();
+}
+
+/* ── card actions ───────────────────────────────────────── */
+function refill(level, slot){
+  S.market[level][slot] = S.decks[level].pop() || null;
+}
+
+function actBuy(where, id){
+  const p = cur();
+  let card = null, level = null, slot = -1;
+  if(where === 'market'){
+    for(const l of [1,2,3]){
+      const k = S.market[l].findIndex(c => c && c.id === id);
+      if(k > -1){ card = S.market[l][k]; level = l; slot = k; break; }
+    }
+  } else {
+    const k = p.reserved.findIndex(c => c.id === id);
+    if(k > -1) card = p.reserved[k];
+  }
+  if(!card) return;
+  const pay = priceFor(p, card);
+  if(!pay) return;
+
+  for(const g of GEMS){ p.tokens[g] -= pay[g]; S.bank[g] += pay[g]; }
+  p.tokens.gold -= pay.gold; S.bank.gold += pay.gold;
+
+  if(where === 'market') refill(level, slot);
+  else p.reserved = p.reserved.filter(c => c.id !== id);
+
+  p.cards.push(card);
+  p.bonuses[card.gem]++;
+  logMsg(p, 'bought the <b>' + card.nm + '</b> ' + gemWord(card.gem) +
+    (card.points ? ' for ' + card.points + ' prestige' : '') + '.' +
+    (pay.gold ? ' (' + pay.gold + ' gold spent)' : ''));
+  UI.selCard = null;
+  endTurn();
+}
+
+function actReserve(where, id){
+  const p = cur();
+  if(p.reserved.length >= RESERVE_LIMIT) return;
+  let card = null;
+  if(where === 'market'){
+    for(const l of [1,2,3]){
+      const k = S.market[l].findIndex(c => c && c.id === id);
+      if(k > -1){ card = S.market[l][k]; refill(l, k); break; }
+    }
+  } else {                                     /* top of a face-down deck */
+    const l = Number(id);
+    card = S.decks[l].pop() || null;
+  }
+  if(!card) return;
+  p.reserved.push(card);
+  let extra = '';
+  if(S.bank.gold > 0){ S.bank.gold--; p.tokens.gold++; extra = ' and took a gold'; }
+  logMsg(p, 'reserved ' + (where === 'market' ? 'the <b>' + card.nm + '</b>' : 'a card from the level ' + card.level + ' deck') + extra + '.');
+  UI.selCard = null;
+  endTurn();
+}
+
+/* ── end of turn: limit → nobles → scoring ──────────────── */
+function endTurn(){
+  const p = cur();
+  if(held(p) > HAND_LIMIT){
+    S.pending = { kind:'discard' };
+    if(p.bot){ botDiscard(); return; }
+    render(); return;
+  }
+  nobleStep();
+}
+
+function nobleStep(){
+  const p = cur();
+  const ready = S.nobles.filter(nb => GEMS.every(g => p.bonuses[g] >= (nb.req[g]||0)));
+  if(ready.length === 1){ takeNoble(ready[0].id); return; }
+  if(ready.length > 1){
+    if(p.bot){ takeNoble(botNoble(ready).id); return; }
+    S.pending = { kind:'noble', ids: ready.map(n => n.id) };
+    render(); return;
+  }
+  finishTurn();
+}
+
+function takeNoble(id){
+  const p = cur(), nb = S.nobles.find(n => n.id === id);
+  if(nb){
+    S.nobles = S.nobles.filter(n => n.id !== id);
+    p.nobles.push(nb);
+    logMsg(p, 'is visited by <b>' + nb.nm + '</b> — 3 prestige.');
+  }
+  S.pending = null;
+  finishTurn();
+}
+
+function score(p){ return p.cards.reduce((s,c)=>s+c.points, 0) + p.nobles.length * 3; }
+
+function finishTurn(){
+  S.pending = null;
+  S.players.forEach(p => p.points = score(p));
+  const p = cur();
+  if(p.points >= WIN && !S.endAfterRound){
+    S.endAfterRound = true;
+    logMsg(null, '<b>' + p.name + '</b> reaches ' + p.points + ' prestige. The round is played out.');
+  }
+  const next = (S.cur + 1) % S.players.length;
+  if(next === 0 && S.endAfterRound){ gameOver(); return; }
+  if(next === 0) S.round++;
+  S.cur = next;
+  UI.pick = []; UI.selCard = null;
+  render();
+  if(cur().bot) scheduleBot();
+}
+
+function gameOver(){
+  S.over = true;
+  const best = standings()[0];
+  logMsg(null, '<b>' + best.name + '</b> wins with ' + best.points + ' prestige.');
+  render();
+}
+
+function standings(){
+  return S.players.slice().sort((a,b) => b.points - a.points || a.cards.length - b.cards.length);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Bot merchant — utility search over every legal action
+   ═══════════════════════════════════════════════════════════ */
+function nobleDraw(p, gem){
+  let v = 0;
+  for(const nb of S.nobles){
+    const gap = GEMS.reduce((s,g) => s + Math.max(0, (nb.req[g]||0) - p.bonuses[g]), 0);
+    if(gap === 0 || (nb.req[gem]||0) <= p.bonuses[gem]) continue;
+    v += 3.4 / gap;                     /* the closer the noble, the keener the bot */
+  }
+  return v;
+}
+
+function desire(p, card){
+  return card.points * 2.3
+       + nobleDraw(p, card.gem)
+       + 1.0                                                  /* engine value of any bonus */
+       + (card.level === 1 ? 0.45 : card.level === 2 ? 0.2 : 0)
+       + (7 - Math.min(7, GEMS.reduce((s,g)=>s+(card.cost[g]||0),0))) * 0.05;
+}
+
+function needVector(p){
+  const need = {}; GEMS.forEach(g => need[g] = 0);
+  const cands = marketCards().concat(p.reserved)
+    .map(c => ({ c, d: desire(p,c), m: missing(p,c) }))
+    .filter(x => x.m.total > 0 && x.m.total <= 7)
+    .sort((a,b) => (b.d/(1+b.m.total)) - (a.d/(1+a.m.total)))
+    .slice(0, 4);
+  cands.forEach((x, i) => {
+    const w = 1 / (1 + i * 0.7);
+    GEMS.forEach(g => need[g] += x.m.per[g] * w);
+  });
+  return need;
+}
+
+function combos3(list){
+  const out = [];
+  for(let a=0;a<list.length;a++)
+    for(let b=a+1;b<list.length;b++)
+      for(let c=b+1;c<list.length;c++) out.push([list[a],list[b],list[c]]);
+  return out;
+}
+
+function botActions(p){
+  const acts = [], need = needVector(p), open = openColors();
+  const nearWin = p.points >= WIN - 5;
+
+  /* buy anything affordable, from the table or the reserve */
+  const buyables = marketCards().map(c => ['market', c]).concat(p.reserved.map(c => ['reserved', c]));
+  for(const [where, c] of buyables){
+    if(!canBuy(p, c)) continue;
+    const pay = priceFor(p, c);
+    const spent = GEMS.reduce((s,g)=>s+pay[g], 0) + pay.gold;
+    let v = desire(p, c) * 10 - pay.gold * 0.9 - spent * 0.12;
+    if(p.points + c.points >= WIN) v += 400;                   /* close it out */
+    if(where === 'reserved') v += 0.8;                         /* clears a reserve slot */
+    acts.push({ kind:'buy', where, id:c.id, v, label:c.nm });
+  }
+
+  /* take gems */
+  const takeScore = (pick) => {
+    const counts = {}; pick.forEach(g => counts[g] = (counts[g]||0)+1);
+    let v = 0;
+    for(const g in counts){
+      for(let k = 0; k < counts[g]; k++){
+        const have = p.tokens[g] + k;
+        v += Math.max(0.12, Math.min(need[g] - have * 0.55, 1.75));
+      }
+    }
+    v += pick.length * 0.22;
+    const over = Math.max(0, held(p) + pick.length - HAND_LIMIT);
+    v -= over * 1.1;
+    return v;
+  };
+  const want = Math.min(3, open.length);
+  if(want === 3) for(const trio of combos3(open)) acts.push({ kind:'take', pick:trio, v:takeScore(trio) });
+  else if(want > 0) acts.push({ kind:'take', pick:open.slice(0, want), v:takeScore(open.slice(0, want)) });
+  for(const g of GEMS) if(S.bank[g] >= 4) acts.push({ kind:'take', pick:[g,g], v:takeScore([g,g]) });
+
+  /* reserve — only with a reason: it costs a turn and a slot */
+  if(p.reserved.length < RESERVE_LIMIT){
+    for(const c of marketCards()){
+      const m = missing(p, c);
+      const rival = S.players.some(o => o !== p && canBuy(o, c) && c.points >= 3);
+      const closes = p.points + c.points >= WIN && m.total <= 3;
+      const worth = m.total <= 3 && c.points >= 2;
+      if(!rival && !closes && !worth) continue;
+      let v = 1.1 + c.points * 0.55 + nobleDraw(p, c.gem) * 0.5
+            - m.total * 0.4 + (S.bank.gold > 0 ? 0.6 : -0.5)
+            + (rival ? 2.0 : 0) + (closes ? 8 : 0)
+            - p.reserved.length * 1.7;
+      acts.push({ kind:'reserve', where:'market', id:c.id, v, label:c.nm });
+    }
+    if(S.bank.gold > 0 && p.reserved.length === 0 && S.decks[3].length)
+      acts.push({ kind:'reserve', where:'deck', id:'3', v:0.35 });
+  }
+
+  /* never stall: if nothing above is legal, reserve the cheapest card on the table */
+  if(!acts.length && p.reserved.length < RESERVE_LIMIT){
+    const cheap = marketCards().sort((a,b) => missing(p,a).total - missing(p,b).total)[0];
+    if(cheap) acts.push({ kind:'reserve', where:'market', id:cheap.id, v:0 });
+  }
+
+  acts.forEach(a => a.v += Math.random() * 0.18);
+  return acts.sort((a,b) => b.v - a.v);
+}
+
+function botMove(){
+  if(!S || S.over || !cur().bot) return;
+  const p = cur();
+  const best = botActions(p)[0];
+  if(!best){ logMsg(p, 'passes — nothing legal to do.'); finishTurn(); return; }
+  if(best.kind === 'buy') actBuy(best.where, best.id);
+  else if(best.kind === 'reserve') actReserve(best.where, best.id);
+  else actTake(best.pick);
+}
+
+function scheduleBot(){
+  clearTimeout(UI.botTimer);
+  UI.botTimer = setTimeout(botMove, UI.botMs);
+}
+
+function botDiscard(){
+  const p = cur(), need = needVector(p);
+  while(held(p) > HAND_LIMIT){
+    let worst = null, wv = Infinity;
+    for(const g of GEMS){
+      if(!p.tokens[g]) continue;
+      const v = need[g] - p.tokens[g] * 0.4;
+      if(v < wv){ wv = v; worst = g; }
+    }
+    if(!worst) worst = 'gold';                                 /* gold goes last */
+    p.tokens[worst]--; S.bank[worst]++;
+    logMsg(p, 'returned a ' + NAME[worst].toLowerCase() + ' to the bank.');
+  }
+  S.pending = null;
+  nobleStep();
+}
+
+function botNoble(options){
+  const p = cur();
+  /* all nobles are 3 points; keep the one whose colours are scarcest for rivals */
+  return options.slice().sort((a,b) => {
+    const w = nb => GEMS.reduce((s,g) => s + (nb.req[g]||0), 0);
+    return w(a) - w(b);
+  })[0];
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Rendering
+   ═══════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function chipHTML(gem, text, cls){
+  return '<span class="chip ' + (cls||'') + '" data-gem="' + gem + '">' + (text === undefined || text === null ? '' : text) + '</span>';
+}
+function gemWord(gem){ return '<span class="inline">' + chipHTML(gem, '', 'xs flat') + '</span>'; }
+function gemsInline(counts){
+  const parts = [];
+  for(const g in counts) for(let i=0;i<counts[g];i++) parts.push(chipHTML(g, '', 'xs flat'));
+  return '<span class="inline">' + parts.join('') + '</span>';
+}
+const myTurn = () => S && !S.over && !S.pending && !cur().bot;
+
+function render(){
+  if(!S) return;
+  $('setup').hidden = true;
+  $('table').hidden = false;
+  $('brand-sub').textContent = 'Round ' + S.round + ' · first to ' + WIN + ' prestige';
+  renderTurnbar(); renderNobles(); renderRows(); renderBank(); renderTray(); renderPlayers(); renderLog();
+  $('discard-modal').hidden = !(S.pending && S.pending.kind === 'discard' && !cur().bot);
+  if(!$('discard-modal').hidden) renderDiscard();
+  $('noble-modal').hidden = !(S.pending && S.pending.kind === 'noble' && !cur().bot);
+  if(!$('noble-modal').hidden) renderNobleChoice();
+  $('over-modal').hidden = !S.over;
+  if(S.over) renderOver();
+}
+
+function renderTurnbar(){
+  const p = cur();
+  let hint;
+  if(S.over) hint = 'The market closes.';
+  else if(p.bot) hint = 'Weighing the table…';
+  else if(S.pending && S.pending.kind === 'discard') hint = 'Return gems down to ' + HAND_LIMIT + '.';
+  else if(S.pending) hint = 'A noble is waiting on your answer.';
+  else hint = 'Take gems from the bank, or pick a card to buy or reserve.';
+  $('turnbar').innerHTML =
+    '<span class="who"><span class="pip' + (p.bot && !S.over ? ' thinking' : '') + '"></span>' +
+    (S.over ? 'Final accounts' : esc(p.name) + (p.bot ? '' : ' — your turn')) + '</span>' +
+    '<span class="hint">' + hint + '</span><span class="spacer"></span>' +
+    (S.endAfterRound && !S.over ? '<span class="badge">Final round</span>' : '') +
+    '<span class="hint tnum">' + p.points + ' / ' + WIN + ' prestige</span>';
+}
+
+function nobleTile(nb, ready, clickable){
+  const reqs = GEMS.filter(g => nb.req[g]).map(g => chipHTML(g, nb.req[g], 'sm')).join('');
+  return '<' + (clickable ? 'button type="button"' : 'div') + ' class="noble' + (ready ? ' ready' : '') + '"' +
+    (clickable ? ' data-noble="' + nb.id + '"' : '') + '>' +
+    '<span class="pts">3</span><span class="body"><span class="nm">' + esc(nb.nm) + '</span>' +
+    '<span class="req">' + reqs + '</span></span></' + (clickable ? 'button' : 'div') + '>';
+}
+
+function renderNobles(){
+  const p = cur();
+  $('nobles').innerHTML = S.nobles.map(nb =>
+    nobleTile(nb, !p.bot && GEMS.every(g => p.bonuses[g] >= (nb.req[g]||0)), false)
+  ).join('') || '<div class="noble"><span class="body"><span class="nm">Every noble has found a merchant.</span></span></div>';
+}
+
+function cardHTML(card, where){
+  const p = cur();
+  const sel = UI.selCard && UI.selCard.id === card.id;
+  const buy = canBuy(p, card);
+  const miss = missing(p, card);
+  const costs = GEMS.filter(g => card.cost[g]).map(g =>
+    '<span class="cost-i' + (miss.per[g] > 0 ? ' short' : '') + '">' + chipHTML(g, card.cost[g], 'sm') + '</span>'
+  ).join('');
+  return '<button type="button" class="card' + (buy && !p.bot ? ' buyable' : '') + (sel ? ' sel' : '') +
+    (UI.seen.has(card.id) ? '' : ' enter') + '" data-gem="' + card.gem + '" data-card="' + card.id +
+    '" data-where="' + where + '" aria-label="' + esc(card.nm) + ', ' + card.points + ' prestige">' +
+    '<span class="crown"><span class="pts' + (card.points ? '' : ' zero') + '">' + (card.points || '·') + '</span>' +
+    chipHTML(card.gem, '', 'sm') + '</span>' +
+    '<span class="face"><span class="mine">' + esc(card.nm) + '</span></span>' +
+    '<span class="costs">' + costs + '</span></button>';
+}
+
+function actionBar(card){
+  const p = cur();
+  const buy = canBuy(p, card);
+  const full = p.reserved.length >= RESERVE_LIMIT;
+  return '<div class="cardact" style="z-index:5">' +
+    '<button type="button" class="btn primary" data-do="buy" ' + (buy ? '' : 'disabled') + '>' +
+      (buy ? 'Buy' : 'Short') + '</button>' +
+    '<button type="button" class="btn" data-do="reserve" ' + (full ? 'disabled' : '') + '>' +
+      (full ? 'Full' : 'Reserve') + '</button></div>';
+}
+
+function renderRows(){
+  const p = cur(), canRes = myTurn() && p.reserved.length < RESERVE_LIMIT;
+  let html = '';
+  for(const lvl of [3,2,1]){
+    const n = S.decks[lvl].length;
+    html += '<div class="row">' +
+      '<button type="button" class="deck" data-deck="' + lvl + '" ' + (canRes && n ? '' : 'disabled') +
+      ' title="Reserve the top card of the level ' + lvl + ' deck, sight unseen">' +
+      '<span class="lvl">' + ['','I','II','III'][lvl] + '</span><span class="cnt tnum">' + n + '</span></button>';
+    for(let i=0;i<4;i++){
+      const c = S.market[lvl][i];
+      html += '<div class="slot' + (c ? '' : ' empty') + '">';
+      if(c){
+        html += cardHTML(c, 'market');
+        if(UI.selCard && UI.selCard.id === c.id && myTurn()) html += actionBar(c);
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  $('rows').innerHTML = html;
+  marketCards().forEach(c => UI.seen.add(c.id));
+}
+
+function renderBank(){
+  const live = myTurn();
+  $('bank').innerHTML = GEMS.concat('gold').map(g => {
+    const picked = UI.pick.filter(x => x === g).length;
+    const dis = g === 'gold' ? true : !(live && canAddPick(g));
+    const title = g === 'gold' ? 'Gold is only gained by reserving a card' : 'Take ' + NAME[g].toLowerCase();
+    return '<button type="button" class="tokbtn' + (picked ? ' picked' : '') + '" data-token="' + g + '" ' +
+      (dis ? 'disabled' : '') + ' title="' + title + '">' +
+      chipHTML(g, '', 'lg') + '<span class="n">' + S.bank[g] + (picked ? ' · ' + picked + ' held' : '') + '</span></button>';
+  }).join('');
+}
+
+function renderTray(){
+  if(!myTurn()){
+    $('tray').innerHTML = '<span class="msg">' + (S.over ? 'The game is over.' : 'Waiting on ' + esc(cur().name) + '.') + '</span>';
+    return;
+  }
+  const v = pickValid(UI.pick);
+  const slots = [0,1,2].map(i => UI.pick[i] ? chipHTML(UI.pick[i], '', '') : '<span class="hole"></span>').join('');
+  $('tray').innerHTML =
+    '<span class="slots">' + slots + '</span>' +
+    '<span class="msg">' + v.why + '</span>' +
+    '<button type="button" class="btn sm" data-tray="clear" ' + (UI.pick.length ? '' : 'disabled') + '>Clear</button>' +
+    '<button type="button" class="btn primary sm" data-tray="take" ' + (v.ok ? '' : 'disabled') + '>Take</button>';
+}
+
+function renderPlayers(){
+  $('players').innerHTML = S.players.map(p => {
+    const bonusRow = GEMS.filter(g => p.bonuses[g]).map(g =>
+      '<span class="stack">' + chipHTML(g, '', 'sm flat') + '<b>' + p.bonuses[g] + '</b></span>').join('')
+      || '<span class="tk" style="font-size:11.5px; color:var(--ink-faint)">no cards yet</span>';
+    const tokRow = GEMS.concat('gold').filter(g => p.tokens[g]).map(g =>
+      '<span class="stack">' + chipHTML(g, '', 'sm flat') + '<b>' + p.tokens[g] + '</b></span>').join('')
+      || '<span class="tk" style="font-size:11.5px; color:var(--ink-faint)">empty purse</span>';
+    const mine = p === cur() && !p.bot;
+    const res = p.reserved.map(c => {
+      if(!mine) return '<span class="minicard back" title="Reserved, held face down"></span>';
+      const buy = canBuy(p, c);
+      return '<button type="button" class="minicard' + (buy && myTurn() ? ' buyable' : '') + '" data-res="' + c.id +
+        '" ' + (buy && myTurn() ? '' : 'disabled') + ' title="' + esc(c.nm) + (buy ? ' — buy' : ' — not yet affordable') + '">' +
+        '<span class="mc-top"><span class="mc-p">' + (c.points || '·') + '</span>' + chipHTML(c.gem, '', 'xs') + '</span>' +
+        '<span class="mc-cost">' + GEMS.filter(g => c.cost[g]).map(g => chipHTML(g, c.cost[g], 'xs')).join('') + '</span></button>';
+    }).join('');
+    return '<div class="pl' + (p === cur() && !S.over ? ' turn' : '') + '">' +
+      '<div class="pl-head"><span class="pl-name">' + esc(p.name) + '</span>' +
+      (p.bot ? '<span class="pl-tag">bot</span>' : '<span class="pl-tag">you</span>') +
+      '<span class="pl-pts tnum">' + p.points + '<small> pp</small></span></div>' +
+      '<div class="pl-grid">' + bonusRow + '</div>' +
+      '<div class="pl-grid">' + tokRow + '</div>' +
+      (p.nobles.length ? '<div class="pl-grid">' + p.nobles.map(nb =>
+        '<span class="nbl-mini">' + esc(nb.nm) + '</span>').join('') + '</div>' : '') +
+      (p.reserved.length ? '<div class="hold">Reserved · ' + p.reserved.length + '/' + RESERVE_LIMIT +
+        '</div><div class="pl-res">' + res + '</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function renderLog(){
+  $('log').innerHTML = S.log.map(e =>
+    '<li><span class="t tnum">' + e.n + '</span><span class="msg">' +
+    (e.who ? '<b>' + esc(e.who) + '</b> ' : '') + e.msg + '</span></li>').join('');
+}
+
+function renderDiscard(){
+  const p = cur(), over = held(p) - HAND_LIMIT;
+  $('dis-sub').innerHTML = 'You hold ' + held(p) + ' gems. Return <b>' + over + '</b> to the bank.';
+  $('dis-bank').innerHTML = GEMS.concat('gold').filter(g => p.tokens[g]).map(g =>
+    '<button type="button" class="tokbtn" data-drop="' + g + '">' + chipHTML(g, '', 'lg') +
+    '<span class="n">' + p.tokens[g] + ' held</span></button>').join('');
+}
+
+function renderNobleChoice(){
+  $('nb-options').innerHTML = S.pending.ids.map(id =>
+    nobleTile(S.nobles.find(n => n.id === id), true, true)).join('');
+}
+
+function renderOver(){
+  const rows = standings();
+  const top = rows[0].points, tied = rows.filter(r => r.points === top);
+  $('ov-sub').innerHTML = tied.length > 1
+    ? esc(rows[0].name) + ' takes it on the tie-break — ' + rows[0].cards.length + ' cards to ' + tied[1].cards.length + '.'
+    : esc(rows[0].name) + ' closes the books with ' + top + ' prestige.';
+  $('standings').innerHTML = rows.map((p, i) =>
+    '<div class="r' + (i === 0 ? ' win' : '') + '"><span class="rk">' + (i+1) + '</span>' +
+    '<span class="nm">' + esc(p.name) + (p.bot ? '' : ' (you)') + '</span>' +
+    '<span class="de">' + p.cards.length + ' cards · ' + p.nobles.length + ' nobles</span>' +
+    '<span class="sc tnum">' + p.points + '</span></div>').join('');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Events
+   ═══════════════════════════════════════════════════════════ */
+$('rows').addEventListener('click', e => {
+  const act = e.target.closest('[data-do]');
+  if(act && UI.selCard){
+    if(act.disabled) return;
+    const { id, where } = UI.selCard;
+    if(act.dataset.do === 'buy') actBuy(where, id); else actReserve(where, id);
+    return;
+  }
+  const deck = e.target.closest('[data-deck]');
+  if(deck && !deck.disabled){ actReserve('deck', deck.dataset.deck); return; }
+  const card = e.target.closest('[data-card]');
+  if(card){
+    const id = card.dataset.card;
+    UI.selCard = (UI.selCard && UI.selCard.id === id) ? null : { id, where: card.dataset.where };
+    UI.pick = [];
+    render();
+  }
+});
+
+$('bank').addEventListener('click', e => {
+  const b = e.target.closest('[data-token]');
+  if(!b || b.disabled) return;
+  UI.pick.push(b.dataset.token);
+  UI.selCard = null;
+  render();
+});
+
+$('tray').addEventListener('click', e => {
+  const b = e.target.closest('[data-tray]');
+  if(!b || b.disabled) return;
+  if(b.dataset.tray === 'clear'){ UI.pick = []; render(); return; }
+  const picks = UI.pick.slice();
+  UI.pick = [];
+  actTake(picks);
+});
+
+$('players').addEventListener('click', e => {
+  const b = e.target.closest('[data-res]');
+  if(b && !b.disabled) actBuy('reserved', b.dataset.res);
+});
+
+$('dis-bank').addEventListener('click', e => {
+  const b = e.target.closest('[data-drop]');
+  if(!b) return;
+  const p = cur(), g = b.dataset.drop;
+  if(!p.tokens[g]) return;
+  p.tokens[g]--; S.bank[g]++;
+  logMsg(p, 'returned a ' + NAME[g].toLowerCase() + ' to the bank.');
+  if(held(p) <= HAND_LIMIT){ S.pending = null; nobleStep(); } else render();
+});
+
+$('nb-options').addEventListener('click', e => {
+  const b = e.target.closest('[data-noble]');
+  if(b) takeNoble(b.dataset.noble);
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if(!$('rules-modal').hidden){ $('rules-modal').hidden = true; return; }
+    if(UI.selCard || UI.pick.length){ UI.selCard = null; UI.pick = []; render(); }
+  }
+});
+
+/* ── rules & new game ───────────────────────────────────── */
+const openRules = () => { $('rules-modal').hidden = false; };
+$('btn-rules').addEventListener('click', openRules);
+$('btn-rules-2').addEventListener('click', openRules);
+$('btn-rules-close').addEventListener('click', () => { $('rules-modal').hidden = true; });
+$('rules-modal').addEventListener('click', e => { if(e.target.id === 'rules-modal') $('rules-modal').hidden = true; });
+$('btn-new').addEventListener('click', () => {
+  clearTimeout(UI.botTimer);
+  S = null;
+  $('table').hidden = true; $('setup').hidden = false;
+  $('over-modal').hidden = true; $('discard-modal').hidden = true; $('noble-modal').hidden = true;
+  $('brand-sub').textContent = 'Renaissance gem merchants · first to ' + WIN + ' prestige';
+});
+$('btn-over-review').addEventListener('click', () => { $('over-modal').hidden = true; });
+$('btn-over-again').addEventListener('click', () => {
+  const seats = S.players.map(p => ({ name:p.name, bot:p.bot }));
+  newGame(seats); render(); if(cur().bot) scheduleBot();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   Setup screen
+   ═══════════════════════════════════════════════════════════ */
+const BOTNAMES = ['Pascal', 'Vittoria', 'Khadija', 'Aldo', 'Giulia', 'Rafael'];
+let setupSeats = [];
+
+function loadPrefs(){
+  try{
+    const raw = localStorage.getItem('splendor.prefs');
+    if(raw){
+      const o = JSON.parse(raw);
+      if(Array.isArray(o.seats) && o.seats.length >= 2 && o.seats.length <= 4) setupSeats = o.seats;
+      if(o.botMs) UI.botMs = o.botMs;
+    }
+  }catch(err){ /* storage unavailable — defaults are fine */ }
+  if(!setupSeats.length) setSeatCount(3);
+}
+function savePrefs(){
+  try{ localStorage.setItem('splendor.prefs', JSON.stringify({ seats:setupSeats, botMs:UI.botMs })); }
+  catch(err){ /* ignore */ }
+}
+function setSeatCount(n){
+  const next = [];
+  for(let i=0;i<n;i++){
+    next.push(setupSeats[i] || { name: i === 0 ? 'You' : BOTNAMES[i-1], bot: i !== 0 });
+  }
+  setupSeats = next;
+}
+function renderSetup(){
+  $('seats').innerHTML = setupSeats.map((s,i) =>
+    '<div class="seat"><span class="idx">' + (i+1) + '</span>' +
+    '<input id="seat-name-' + i + '" type="text" maxlength="18" value="' + esc(s.name) + '" aria-label="Name of seat ' + (i+1) + '">' +
+    '<span class="toggle"><button type="button" data-seat="' + i + '" data-bot="0" aria-pressed="' + (!s.bot) + '">Human</button>' +
+    '<button type="button" data-seat="' + i + '" data-bot="1" aria-pressed="' + (!!s.bot) + '">Bot</button></span></div>'
+  ).join('');
+  $('count-seg').querySelectorAll('button').forEach(b =>
+    b.setAttribute('aria-pressed', String(Number(b.dataset.n) === setupSeats.length)));
+  $('speed-seg').querySelectorAll('button').forEach(b =>
+    b.setAttribute('aria-pressed', String(Number(b.dataset.ms) === UI.botMs)));
+}
+$('count-seg').addEventListener('click', e => {
+  const b = e.target.closest('[data-n]'); if(!b) return;
+  syncNames(); setSeatCount(Number(b.dataset.n)); renderSetup();
+});
+$('speed-seg').addEventListener('click', e => {
+  const b = e.target.closest('[data-ms]'); if(!b) return;
+  UI.botMs = Number(b.dataset.ms); renderSetup();
+});
+$('seats').addEventListener('click', e => {
+  const b = e.target.closest('[data-seat]'); if(!b) return;
+  syncNames();
+  const i = Number(b.dataset.seat), bot = b.dataset.bot === '1';
+  setupSeats[i].bot = bot;
+  if(bot && setupSeats[i].name === 'You') setupSeats[i].name = BOTNAMES[i] || 'Bot ' + (i+1);
+  if(!bot && BOTNAMES.includes(setupSeats[i].name)) setupSeats[i].name = i === 0 ? 'You' : 'Player ' + (i+1);
+  renderSetup();
+});
+function syncNames(){
+  setupSeats.forEach((s,i) => {
+    const el = $('seat-name-' + i);
+    if(el) s.name = el.value.trim().slice(0,18) || (s.bot ? 'Bot ' + (i+1) : 'Player ' + (i+1));
+  });
+}
+$('btn-start').addEventListener('click', () => {
+  syncNames(); savePrefs();
+  newGame(setupSeats.map(s => ({ name:s.name, bot:s.bot })));
+  render();
+  if(cur().bot) scheduleBot();
+});
+
+/* ═══════════════════════════════════════════════════════════
+   Boot — restore a game in progress across a republish
+   ═══════════════════════════════════════════════════════════ */
+function start(data){
+  loadPrefs();
+  renderSetup();
+  if(data && data.S){
+    S = data.S;
+    UI.pick = []; UI.selCard = null; UI.seen = new Set(marketCards().map(c => c.id));
+    if(data.botMs) UI.botMs = data.botMs;
+    render();
+    if(!S.over && !S.pending && cur().bot) scheduleBot();
+  }
+}
+if(window.claude && window.claude.hot){
+  window.claude.hot.snapshot(() => ({ S, botMs: UI.botMs }));
+  window.claude.hot.ready ? window.claude.hot.ready(start) : start(window.claude.hot.data || {});
+} else {
+  start({});
+}
+</script>
