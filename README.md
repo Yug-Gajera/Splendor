@@ -19,9 +19,11 @@ Publish it with GitHub Pages and play from the Home Screen:
 4. On iPhone, open that in Safari → **Share → Add to Home Screen**. It launches
    full-screen with no browser chrome, using the bundled icon.
 
-The layout, tap targets and safe-area insets are built for a 390 px phone screen,
-and verified against an emulated iPhone: no horizontal scrolling, taps drive every
-action, and the sticky header clears the status bar.
+On phones the bank, your tray and your purse ride in a dock at the bottom, and the
+turn banner sticks to the top, so the whole table fits on one iPhone 13 screen
+without scrolling. Gems you take fly into the dock. Verified on emulated iPhone 13
+and iPhone SE: no horizontal scrolling, nothing clipped, and taps drive every action.
+Text fields are 16 px so Safari never zooms in on them.
 
 ## Rules implemented
 
@@ -80,11 +82,35 @@ in the system settings, the flights are skipped, but bots still pause between mo
 
 ## The bots
 
-Each bot scores every legal action and takes the best, with a little noise so games
-differ. It values prestige, progress toward nobles, and bonuses that cheapen the cards
-it is aiming at; it reserves only to close out a win, to take a card a rival can
-already afford, or when a card worth buying is nearly in hand. Pace is adjustable at
-setup.
+Three levels, chosen at setup:
+
+| Level | How it plays |
+|---|---|
+| **Gentle** | Sometimes browses instead of buying, buys whatever catches its eye, rarely blocks you. |
+| **Shrewd** | Scores every legal move: prestige, noble progress, and bonuses toward the cards it's aiming at. Reserves only to win, to take a card a rival can already afford, or when a good card is nearly in hand. |
+| **Ruthless** | Plays each promising move forward three of its own turns on a copy of the table and keeps the line that scores soonest. It also blocks a rival's winning card. Its lookahead never peeks at the hidden decks: refills come up empty. |
+
+Measured head to head over 60–80 games each, alternating who goes first:
+Shrewd beats Gentle **74%** of the time and Ruthless beats Shrewd **67%**.
+Ruthless takes about 10 ms per move.
+
+**Hint** in the turn bar asks the Ruthless engine for your best move and sets it up for
+you: the gems go in your tray, or the card is selected with Buy and Reserve ready.
+
+## Saving and your record
+
+The game in progress is saved after every turn, so a reload or a closed tab picks up
+where it left off. That matters on iPhone, where Home Screen apps get reloaded. *New game*
+keeps the save until you deal a new one, and the setup screen offers to resume it.
+Games against bots build a record of wins, best score, and results per bot level.
+Winning brings a shower of gems.
+
+## Sound
+
+Every sound is synthesised in the browser, with no audio files: gem clinks as they land,
+a swish as a card lifts, a chime for a noble, a two-note cue when the bots hand the turn
+back to you, and a fanfare for a win. Toggle it from the top bar. On iPhone it follows
+the silent switch where Safari supports that.
 
 ## Layout
 

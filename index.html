@@ -156,8 +156,62 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .chip.flat{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ce) 70%, transparent), inset 0 -1px 3px color-mix(in srgb, var(--ce) 50%, transparent)}
 
 /* ── table layout ──────────────────────────── */
-.table{display:grid; grid-template-columns:minmax(0,1fr) 352px; gap:18px; align-items:start}
-@media (max-width:1040px){ .table{grid-template-columns:minmax(0,1fr)} }
+.table{display:grid; grid-template-columns:minmax(0,1fr) 352px; grid-template-rows:auto 1fr; gap:12px 18px; align-items:start}
+.table > .board{grid-column:1; grid-row:1 / span 2}
+.table > .dock{grid-column:2; grid-row:1}
+.table > .rail{grid-column:2; grid-row:2}
+#bank{gap:4px; justify-content:space-between; flex-wrap:nowrap}
+.mypurse{display:none}
+/* phones and narrow tablets: the bank, tray and your purse ride in a dock at the
+   bottom of the screen, and the turn banner sticks to the top */
+@media (max-width:1040px){
+  .table{grid-template-columns:minmax(0,1fr); grid-template-rows:none}
+  .table > .board, .table > .dock, .table > .rail{grid-column:1; grid-row:auto}
+  .dock{position:sticky; bottom:0; z-index:15; border-radius:16px 16px 0 0; border-bottom-color:transparent;
+        padding-block:10px calc(10px + env(safe-area-inset-bottom, 0px));
+        box-shadow:0 -12px 28px -16px rgba(0,0,0,.5)}
+  .dock .panel-title{display:none}
+  .dock .chip.lg{--size:36px}
+  .dock .tray{margin-top:8px; padding-top:8px; display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; gap:7px; align-items:center}
+  .dock .tray .slots{gap:5px}
+  .dock .tray .hole{width:24px; height:24px}
+  .dock .tray .chip{--size:26px}
+  .dock .tray .msg{font-size:11px; line-height:1.3}
+  .dock .tray [data-tray="clear"]{grid-column:3}
+  .dock .tray [data-tray="take"]{grid-column:4}
+  .dock .tokbtn{position:relative; padding:2px}
+  .dock .tokbtn .n{position:absolute; right:-3px; bottom:-2px; min-width:17px; padding:0 4px; border-radius:999px; text-align:center;
+                   background:var(--surface); border:1px solid var(--line-strong); font-size:10px; line-height:15px; color:var(--ink)}
+  .dock .tokbtn .nn{display:none}
+  .mypurse{display:flex; flex-wrap:wrap; align-items:center; gap:5px 10px; margin-top:8px; padding-top:8px; border-top:1px solid var(--line); font-size:12px}
+  .mp-who{display:flex; gap:7px; align-items:baseline; flex:1 1 auto; min-width:0}
+  .mp-who b{font-family:var(--display); font-weight:400; font-size:15px}
+  .mp-who .tnum{color:var(--gold); font-weight:600}
+  .mp-res{border:1px solid var(--line-strong); background:var(--surface-2); border-radius:999px; padding:3px 10px; font-size:11.5px}
+  .mp-row{display:flex; align-items:center; gap:6px; min-width:0}
+  .mp-k{font-size:9.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+  .mp-stacks{display:flex; gap:4px; flex-wrap:wrap}
+  .mp-stacks .stack{padding:1px 5px 1px 1px}
+  .mp-stacks .chip.sm{--size:17px}
+  .topbar{position:relative; box-shadow:none}
+  .turnbar{position:sticky; top:env(safe-area-inset-top, 0px); z-index:16; box-shadow:var(--shadow-2)}
+}
+@media (max-width:380px){                     /* small phones: the tray message gets its own line */
+  .dock .tray .msg{grid-column:1 / -1; grid-row:2}
+}
+@media (max-width:540px){
+  .board .turnbar{padding:8px 12px; gap:2px 10px}
+  .board .turnbar .who{font-size:16px}
+  .board .turnbar .hint{font-size:12px}
+  .board .turnbar .hint.tnum, .board .turnbar .hint.idle{display:none}   /* the dock's tray says it already */
+  /* nobles: four to a row, names small */
+  .board .nobles{display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:6px}
+  .board .noble{padding:6px 5px; gap:4px; min-width:0}
+  .board .noble .pts{font-size:18px}
+  .board .noble .nm{font-size:10px}
+  .board .noble .req{gap:2px}
+  .board .noble .req .chip{--size:17px}
+}
 .board{display:flex; flex-direction:column; gap:12px; min-width:0}
 .rail{display:flex; flex-direction:column; gap:12px; min-width:0}
 .panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:13px; box-shadow:var(--shadow-1)}
@@ -195,7 +249,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .noble.ready{border-color:var(--gold-bright); box-shadow:0 0 0 2px color-mix(in srgb, var(--gold-bright) 35%, transparent), var(--shadow-1)}
 .noble .pts{font-family:var(--display); font-size:25px; line-height:1; color:var(--gold); flex:none}
 .noble .body{min-width:0}
-.noble .nm{font-family:var(--display); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink)}
+.noble .nm{display:block; font-family:var(--display); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--ink)}
 .noble .req{display:flex; gap:4px; margin-top:4px}
 .noble .req .chip{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ce) 70%, transparent)}
 
@@ -239,14 +293,18 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .card[data-gem="onyx"]{--c1:var(--o-1)}
 .card .pts{font-family:var(--display); font-size:27px; line-height:.9; color:var(--ink); min-width:14px}
 .card .pts.zero{color:var(--ink-faint); font-size:15px}
-.card .face{padding:8px 8px 4px; min-height:26px}
+.card .face{position:relative; padding:8px 8px 4px; min-height:26px}
+.card .mine{position:relative; z-index:1}
+/* the cut deepens with the tier: rough stone, step cut, brilliant */
+.motif{position:absolute; right:8px; top:24px; bottom:2px; aspect-ratio:64/56; color:var(--c1); opacity:.38; pointer-events:none; max-height:50px}
+.card[data-gem="diamond"] .motif{color:var(--d-edge)}
 .card .mine{font-size:10px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.card .costs{display:flex; flex-wrap:wrap; gap:4px; padding:7px 8px 9px}
+.card .costs{display:flex; flex-wrap:wrap; align-content:flex-end; align-items:center; gap:4px; padding:7px 8px 9px}
 .card .cost-i{position:relative}
 .card .cost-i.short::after{content:""; position:absolute; inset:-2px; border-radius:50%; border:1.5px dashed color-mix(in srgb, var(--garnet) 70%, transparent)}
 @media (max-width:620px){
   .card{min-height:104px}
-  .card .pts{font-size:21px} .card .face{display:none} .card .costs{gap:3px; padding:5px 5px 7px}
+  .card .pts{font-size:21px} .card .face{padding:0; min-height:0} .card .face > *{display:none} .card .costs{gap:3px; padding:5px 5px 7px}
   .card .crown{padding:5px 5px 4px}
 }
 .cardact{
@@ -332,7 +390,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .seats{display:flex; flex-direction:column; gap:8px; margin-bottom:6px}
 .seat{display:flex; align-items:center; gap:9px; padding:9px 11px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2); flex-wrap:wrap}
 .seat .idx{font-family:var(--display); color:var(--gold); font-size:15px; width:16px; flex:none}
-.seat input{flex:1 1 110px; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:7px; padding:6px 9px; font:inherit; color:var(--ink)}
+.seat input{flex:1 1 110px; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:7px; padding:6px 9px; font:inherit; font-size:16px; color:var(--ink)}
 .seat .toggle{display:flex; gap:3px; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:2px}
 .seat .toggle button{border:0; background:none; border-radius:999px; padding:4px 11px; font-size:12px; color:var(--ink-soft)}
 .seat .toggle button[aria-pressed="true"]{background:var(--surface-3); color:var(--ink); font-weight:600}
@@ -375,11 +433,27 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
 .none{font-size:11.5px; color:var(--ink-faint)}
 .pl-grid:empty{display:none}
 .pl-res:empty{margin-top:0}
+.record{font-size:12.5px; color:var(--ink-soft); margin:12px 0 0}
+.seg-note{font-size:12.5px; color:var(--ink-faint); margin:-8px 0 16px}
+.confetti{position:fixed; inset:0; pointer-events:none; z-index:60; overflow:hidden}
+.turnbar .btn.sm{padding:4px 11px}
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important} }
 </style>
 
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="cut-1" viewBox="0 0 64 56"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M10 40 6 24 18 8 38 4 56 14 60 34 46 50 22 52Z" fill="currentColor" fill-opacity=".14"/>
+    <path d="M18 8 28 26 56 14M28 26 22 52M28 26 6 24M28 26 60 34M38 4 28 26M28 26 46 50"/></g></symbol>
+  <symbol id="cut-2" viewBox="0 0 64 56"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M16 4H48L60 16V40L48 52H16L4 40V16Z" fill="currentColor" fill-opacity=".14"/>
+    <path d="M22 12H42L52 22V34L42 44H22L12 34V22Z"/><path d="M27 19H37L44 26V30L37 37H27L20 30V26Z"/>
+    <path d="M16 4 22 12M48 4 42 12M60 16 52 22M60 40 52 34M48 52 42 44M16 52 22 44M4 40 12 34M4 16 12 22"/></g></symbol>
+  <symbol id="cut-3" viewBox="0 0 64 56"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M14 6H50L62 20 32 54 2 20Z" fill="currentColor" fill-opacity=".14"/>
+    <path d="M2 20H62M14 6 22 20 32 6 42 20 50 6M22 20 32 54 42 20M2 20 32 54M62 20 32 54"/></g></symbol>
+</svg>
 <div class="wrap">
   <header class="topbar">
     <div class="brand">
@@ -392,6 +466,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
     <span class="spacer"></span>
     <div class="topbar-actions">
       <button class="btn" id="btn-pace" title="Speed of the animations and of bot turns">Measured pace</button>
+      <button class="btn" id="btn-sound" aria-pressed="true" title="Gem clinks, card swishes and noble chimes">Sound on</button>
       <button class="btn" id="btn-rules">Rules</button>
       <button class="btn" id="btn-new">New game</button>
     </div>
@@ -412,7 +487,15 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
     <div class="field-label">Seats</div>
     <div class="seats" id="seats"></div>
 
-    <div class="field-label" style="margin-top:18px">Pace of play</div>
+    <div class="field-label" style="margin-top:18px">How hard the bots play</div>
+    <div class="seg" id="skill-seg" role="group" aria-label="Bot skill">
+      <button type="button" data-skill="gentle" aria-pressed="false">Gentle</button>
+      <button type="button" data-skill="shrewd" aria-pressed="true">Shrewd</button>
+      <button type="button" data-skill="ruthless" aria-pressed="false">Ruthless</button>
+    </div>
+    <p class="seg-note" id="skill-note"></p>
+
+    <div class="field-label">Pace of play</div>
     <div class="seg" id="speed-seg" role="group" aria-label="Pace of play">
       <button type="button" data-speed="brisk" aria-pressed="false">Brisk</button>
       <button type="button" data-speed="measured" aria-pressed="true">Measured</button>
@@ -420,9 +503,11 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
     </div>
 
     <div style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap">
+      <button class="btn" id="btn-resume" style="padding:11px 20px" hidden>Resume game</button>
       <button class="btn primary" id="btn-start" style="padding:11px 24px">Deal the cards</button>
       <button class="btn" id="btn-rules-2" style="padding:11px 20px">How it plays</button>
     </div>
+    <p class="record" id="setup-record" hidden></p>
   </section>
 
   <!-- ── table ───────────────────────────── -->
@@ -432,12 +517,13 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
       <div class="nobles" id="nobles"></div>
       <div id="rows" style="display:flex; flex-direction:column; gap:10px"></div>
     </section>
+    <div class="panel dock" id="dock">
+      <h2 class="panel-title">The bank</h2>
+      <div class="bank" id="bank"></div>
+      <div class="tray" id="tray"></div>
+      <div class="mypurse" id="mypurse"></div>
+    </div>
     <aside class="rail">
-      <div class="panel">
-        <h2 class="panel-title">The bank</h2>
-        <div class="bank" id="bank"></div>
-        <div class="tray" id="tray"></div>
-      </div>
       <div class="panel">
         <h2 class="panel-title">Merchants</h2>
         <div class="players" id="players"></div>
@@ -509,6 +595,7 @@ body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-in
     <h2 id="ov-h">Final accounts</h2>
     <p class="sub" id="ov-sub"></p>
     <div class="stand" id="standings"></div>
+    <p class="record" id="ov-record"></p>
     <div class="foot">
       <button class="btn" id="btn-over-review">Review the table</button>
       <button class="btn primary" id="btn-over-again">Play again</button>
@@ -591,7 +678,7 @@ const SPEEDS = {
   measured:   { label:'Measured',   think:480, f:1    },
   deliberate: { label:'Deliberate', think:900, f:1.45 }
 };
-const UI = { selCard:null, pick:[], seen:new Set(), botTimer:null, speed:'measured',
+const UI = { selCard:null, pick:[], seen:new Set(), botTimer:null, speed:'measured', skill:'shrewd', sound:true, suggest:'',
              busy:false, caption:'', lastCaption:'', intent:null, pops:[], bankPops:[], lastPts:{}, lastCur:-1 };
 const REDUCED = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 const INSTANT = () => window.SPLENDOR_INSTANT === true;          /* test hook: skip all motion */
@@ -600,7 +687,7 @@ const wait = ms => INSTANT() ? Promise.resolve() : new Promise(r => setTimeout(r
 const tally = list => list.reduce((o, g) => (o[g] = (o[g] || 0) + 1, o), {});
 const ROMAN = ['', 'I', 'II', 'III'];
 
-function newGame(seats){
+function newGame(seats, skill){
   const n = seats.length;
   const per = n === 2 ? 4 : n === 3 ? 5 : 7;
   const bank = zero();
@@ -619,16 +706,57 @@ function newGame(seats){
       cards: [], reserved: [], nobles: [], points: 0
     })),
     cur: 0, round: 1, endAfterRound: false, over: false,
+    skill: SKILLS[skill] ? skill : 'shrewd',
     pending: null,           /* {kind:'discard'} | {kind:'noble', ids:[]} */
     log: [], seq: 0
   };
   resetUI();
   logMsg(null, 'The market opens. ' + n + ' merchants, ' + (n+1) + ' nobles watching.');
+  saveGame();
+}
+
+/* ── the game in progress survives reloads (iOS reloads Home Screen apps) ── */
+const SAVE_KEY = 'splendor.save', RECORD_KEY = 'splendor.record';
+function saveGame(){
+  if(!S || S.sim || INSTANT()) return;
+  try{
+    if(S.over) localStorage.removeItem(SAVE_KEY);
+    else localStorage.setItem(SAVE_KEY, JSON.stringify({ v:1, S }));
+  }catch(err){ /* storage full or blocked: play on without saving */ }
+}
+function loadSave(){
+  try{
+    const o = JSON.parse(localStorage.getItem(SAVE_KEY));
+    return o && o.v === 1 && o.S && !o.S.over ? o.S : null;
+  }catch(err){ return null; }
+}
+function dropSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(err){ /* ignore */ } }
+
+function loadRecord(){
+  try{ return JSON.parse(localStorage.getItem(RECORD_KEY)) || { games:0, wins:0, best:0, bySkill:{} }; }
+  catch(err){ return { games:0, wins:0, best:0, bySkill:{} }; }
+}
+function recordResult(won, me){
+  const r = loadRecord(), k = S.skill || 'shrewd';
+  r.games++; if(won) r.wins++;
+  r.best = Math.max(r.best || 0, me.points);
+  r.bySkill = r.bySkill || {};
+  r.bySkill[k] = r.bySkill[k] || { games:0, wins:0 };
+  r.bySkill[k].games++; if(won) r.bySkill[k].wins++;
+  try{ localStorage.setItem(RECORD_KEY, JSON.stringify(r)); }catch(err){ /* ignore */ }
+}
+function recordLine(){
+  const r = loadRecord();
+  if(!r.games) return '';
+  const k = (S && S.skill) || UI.skill, vs = r.bySkill && r.bySkill[k];
+  return 'Your record: ' + r.wins + ' won of ' + r.games +
+    (vs ? ' · against ' + SKILLS[k].label + ' bots, ' + vs.wins + ' of ' + vs.games : '') +
+    ' · best score ' + r.best + '.';
 }
 
 function resetUI(){
   clearTimeout(UI.botTimer);
-  Object.assign(UI, { selCard:null, pick:[], seen:new Set(), busy:false, caption:'', lastCaption:'',
+  Object.assign(UI, { selCard:null, pick:[], seen:new Set(), busy:false, caption:'', lastCaption:'', suggest:'',
                       intent:null, pops:[], bankPops:[], lastPts:{}, lastCur:-1 });
   FX.textContent = '';
 }
@@ -707,7 +835,13 @@ const cardEl = id => q('#rows [data-card="' + id + '"]') || q('[data-res="' + id
 function landing(i, row, gem, k){
   const pl = panelOf(i);
   if(!pl) return null;
-  const rowEl = pl.querySelector('[data-row="' + row + '"]') || pl.querySelector('.pl-head');
+  let rowEl = pl.querySelector('[data-row="' + row + '"]') || pl.querySelector('.pl-head');
+  const dock = $('mypurse');
+  if(dock && dock.offsetParent && dock.dataset.pl === String(i)){     /* phone: land in the docked purse */
+    const alt = dock.querySelector('[data-row="' + row + '"]');
+    const r = rowEl.getBoundingClientRect(), dockTop = $('dock').getBoundingClientRect().top;
+    if(alt && (r.top > dockTop - 10 || r.bottom < 0)) rowEl = alt;
+  }
   if(gem){
     const st = rowEl.querySelector('[data-stack="' + gem + '"] .chip');
     if(st) return st.getBoundingClientRect();
@@ -769,8 +903,84 @@ function fly(html, from, to, o){
     const back = el.querySelector('.fx-back');
     if(back) back.animate([{ opacity:0 }, { opacity:0, offset:0.3 }, { opacity:1, offset:0.55 }, { opacity:1 }], timing);
   }
-  const done = () => el.remove();
-  return anim.finished.then(done, done);
+  return anim.finished.then(() => { el.remove(); if(o.sfx) sfx(o.sfx); }, () => el.remove());
+}
+
+/* ── sound: synthesised on the fly, no audio files ───────── */
+let AC = null, MASTER = null, NOISE = null;
+function audio(){
+  if(!UI.sound || INSTANT()) return null;
+  if(!AC){
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return null;
+    try{ if(navigator.audioSession) navigator.audioSession.type = 'ambient'; }catch(err){ /* respects the silent switch where supported */ }
+    try{ AC = new Ctx(); }catch(err){ return null; }
+    MASTER = AC.createGain(); MASTER.gain.value = 0.55; MASTER.connect(AC.destination);
+    NOISE = AC.createBuffer(1, Math.floor(AC.sampleRate * 0.4), AC.sampleRate);
+    const d = NOISE.getChannelData(0);
+    for(let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  if(AC.state === 'suspended') AC.resume().catch(() => {});
+  return AC;
+}
+document.addEventListener('pointerdown', () => { audio(); }, { passive:true });   /* iOS unlocks audio on a gesture */
+
+function tone(t, freq, dur, type, gain){
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(gain, t + 0.006);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(MASTER);
+  o.start(t); o.stop(t + dur + 0.03);
+}
+function hiss(t, dur, freq, gain, sweepTo){
+  const src = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
+  src.buffer = NOISE; f.type = 'bandpass'; f.Q.value = 1.1;
+  f.frequency.setValueAtTime(freq, t);
+  if(sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, t + dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(gain, t + Math.min(0.03, dur / 3));
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f); f.connect(g); g.connect(MASTER);
+  src.start(t); src.stop(t + dur + 0.03);
+}
+function sfx(kind){
+  const ctx = audio();
+  if(!ctx || ctx.state !== 'running') return;
+  const t = ctx.currentTime + 0.005, j = 1 + (Math.random() - 0.5) * 0.08;
+  switch(kind){
+    case 'pick':  tone(t, 1650 * j, 0.06, 'triangle', 0.10); break;
+    case 'gem':   tone(t, 2350 * j, 0.10, 'sine', 0.16); tone(t, 3560 * j, 0.06, 'sine', 0.06); hiss(t, 0.03, 4200, 0.10); break;
+    case 'card':  hiss(t, 0.22, 700, 0.16, 2600); break;
+    case 'land':  tone(t, 190, 0.14, 'sine', 0.22); hiss(t, 0.06, 900, 0.08); break;
+    case 'noble': [659.25, 987.77, 1318.51].forEach((f, k) => tone(t + k * 0.09, f, 0.9, 'sine', 0.10)); break;
+    case 'turn':  tone(t, 784, 0.16, 'sine', 0.09); tone(t + 0.12, 1174.66, 0.3, 'sine', 0.09); break;
+    case 'win':   [523.25, 659.25, 783.99, 1046.5].forEach((f, k) => tone(t + k * 0.13, f, 0.55 + k * 0.1, 'triangle', 0.12)); break;
+    case 'lose':  [587.33, 523.25, 440].forEach((f, k) => tone(t + k * 0.18, f, 0.5, 'sine', 0.08)); break;
+  }
+}
+
+/* a shower of gems for a winner */
+function celebrate(){
+  if(!F()) return;
+  const layer = document.createElement('div');
+  layer.className = 'confetti';
+  layer.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(layer);
+  const kinds = GEMS.concat('gold');
+  for(let k = 0; k < 70; k++){
+    const size = 14 + Math.random() * 20, el = document.createElement('div');
+    el.className = 'fx-item';
+    el.innerHTML = chipHTML(kinds[k % kinds.length], '', '');
+    el.style.cssText = 'left:' + (Math.random() * innerWidth) + 'px; top:-44px; width:' + size + 'px; height:' + size + 'px';
+    layer.appendChild(el);
+    el.animate([
+      { transform:'translate(0,0) rotate(0deg)' },
+      { transform:'translate(' + ((Math.random() - 0.5) * 220) + 'px,' + (innerHeight + 90) + 'px) rotate(' + ((Math.random() - 0.5) * 720) + 'deg)' }
+    ], { duration:1900 + Math.random() * 1500, delay:Math.random() * 800, easing:'cubic-bezier(.25,.6,.45,1)', fill:'both' });
+  }
+  setTimeout(() => layer.remove(), 4600);
 }
 
 /* animate an element that just rendered in place, from where it came from */
@@ -823,11 +1033,15 @@ function runPost(){
       { transform:'none', opacity:1 }
     ], { duration:560 * f, delay:(order++) * 75 * f, easing:'cubic-bezier(.2,.8,.25,1)', fill:'backwards' });
   });
+  const dock = $('mypurse');
   for(const pp of UI.pops){                                       /* things landing in a purse */
-    const pl = panelOf(pp.i);
-    const row = pl && pl.querySelector('[data-row="' + pp.row + '"]');
-    const el = row && (pp.gem ? row.querySelector('[data-stack="' + pp.gem + '"]') : row);
-    if(el) pop(el);
+    const scopes = [panelOf(pp.i)];
+    if(dock && dock.offsetParent && dock.dataset.pl === String(pp.i)) scopes.push(dock);
+    for(const sc of scopes){
+      const row = sc && sc.querySelector('[data-row="' + pp.row + '"]');
+      const el = row && (pp.gem ? row.querySelector('[data-stack="' + pp.gem + '"]') : row);
+      if(el) pop(el);
+    }
   }
   for(const g of UI.bankPops){ const el = bankChip(g); if(el) pop(el); }
   UI.pops = []; UI.bankPops = [];
@@ -855,7 +1069,35 @@ function runPost(){
 
 /* ── actions: fly first, then commit ────────────────────── */
 function refill(level, slot){
-  S.market[level][slot] = S.decks[level].pop() || null;
+  /* a lookahead never peeks at the hidden decks: its refills come up empty */
+  S.market[level][slot] = S.sim ? null : (S.decks[level].pop() || null);
+}
+
+/* ── pure state changes, shared by real turns and bot lookahead ── */
+function commitTake(p, pick){ pick.forEach(g => { S.bank[g]--; p.tokens[g]++; }); }
+function removeFromMarket(id){
+  for(const l of [1,2,3]){
+    const k = S.market[l].findIndex(c => c && c.id === id);
+    if(k > -1){ refill(l, k); return true; }
+  }
+  return false;
+}
+function commitBuy(p, card, pay){
+  for(const g of GEMS.concat('gold')){ p.tokens[g] -= pay[g]; S.bank[g] += pay[g]; }
+  if(!removeFromMarket(card.id)) p.reserved = p.reserved.filter(c => c.id !== card.id);
+  p.cards.push(card);
+  p.bonuses[card.gem]++;
+}
+function commitReserve(p, card, deckLevel){
+  if(deckLevel) S.decks[deckLevel].pop(); else removeFromMarket(card.id);
+  p.reserved.push(card);
+  if(S.bank.gold > 0){ S.bank.gold--; p.tokens.gold++; return true; }
+  return false;
+}
+const readyNobles = p => S.nobles.filter(nb => GEMS.every(g => p.bonuses[g] >= (nb.req[g]||0)));
+function commitNoble(p, nb){
+  S.nobles = S.nobles.filter(n => n.id !== nb.id);
+  p.nobles.push(nb);
 }
 
 async function actTake(pick, src){
@@ -872,12 +1114,12 @@ async function actTake(pick, src){
     if(!p.tokens[g] && fresh[g] === undefined) fresh[g] = nextFresh++;
     const to = landing(p.i, 'tokens', p.tokens[g] ? g : null, fresh[g] || 0);
     return fly(chipHTML(g, '', ''), from, to,
-      { w:34, h:34, s0: from ? from.width / 34 : 1, s1:20 / 34, delay:k * 95, dur:600 });
+      { w:34, h:34, s0: from ? from.width / 34 : 1, s1:20 / 34, delay:k * 95, dur:600, sfx:'gem' });
   });
   await Promise.all(flights);
   if(S !== live) return;
 
-  pick.forEach(g => { S.bank[g]--; p.tokens[g]++; });
+  commitTake(p, pick);
   UI.pick = [];
   Object.keys(counts).forEach(g => UI.pops.push({ i:p.i, row:'tokens', gem:g }));
   logMsg(p, 'took ' + gemsInline(counts) + '.');
@@ -905,26 +1147,23 @@ async function actBuy(where, id){
   render();
   const src = cardEl(card.id);
   if(src) src.style.visibility = 'hidden';
+  sfx('card');
 
   const fw = big && from ? from.width : 150, fh = big && from ? from.height : 134;
   const flights = [ fly(cardFace(card), from, landing(p.i, 'bonus', card.gem, 0),
-    { w:fw, h:fh, s0: big || !from ? 1 : from.width / 150, s1:0.26, fade:true, dur:760, rot:-5, swell: big ? 0.08 : 0.35 }) ];
+    { w:fw, h:fh, s0: big || !from ? 1 : from.width / 150, s1:0.26, fade:true, dur:760, rot:-5, swell: big ? 0.08 : 0.35, sfx:'land' }) ];
   let k = 0;
   for(const g of GEMS.concat('gold')){                            /* the payment heads back to the bank */
     for(let n = 0; n < pay[g]; n++, k++){
       flights.push(fly(chipHTML(g, '', ''), landing(p.i, 'tokens', g), rectOf(bankChip(g)),
-        { w:30, h:30, s0:20 / 30, s1:44 / 30, delay:180 + k * 70, dur:560 }));
+        { w:30, h:30, s0:20 / 30, s1:44 / 30, delay:180 + k * 70, dur:560, sfx:'gem' }));
     }
   }
   await Promise.all(flights);
   if(S !== live) return;
 
-  for(const g of GEMS){ p.tokens[g] -= pay[g]; S.bank[g] += pay[g]; if(pay[g]) UI.bankPops.push(g); }
-  if(pay.gold){ p.tokens.gold -= pay.gold; S.bank.gold += pay.gold; UI.bankPops.push('gold'); }
-  if(where === 'market') refill(level, slot);
-  else p.reserved = p.reserved.filter(c => c.id !== id);
-  p.cards.push(card);
-  p.bonuses[card.gem]++;
+  commitBuy(p, card, pay);
+  GEMS.concat('gold').forEach(g => { if(pay[g]) UI.bankPops.push(g); });
   UI.pops.push({ i:p.i, row:'bonus', gem:card.gem });
   logMsg(p, 'bought the <b>' + card.nm + '</b> ' + gemWord(card.gem) +
     (card.points ? ' for ' + card.points + ' prestige' : '') + '.' +
@@ -955,26 +1194,22 @@ async function actReserve(where, id){
   UI.selCard = null; UI.intent = null;
   render();
   if(where === 'market'){ const s = srcOf(); if(s) s.style.visibility = 'hidden'; }
+  sfx('card');
 
   const fw = from ? from.width : 120, fh = from ? from.height : 134;
   const html = where === 'deck' ? '<div class="fx-cardback"></div>'
              : cardFace(card) + (p.bot ? '<div class="fx-back"></div>' : '');
   const takesGold = S.bank.gold > 0;
   const flights = [ fly(html, from, landing(p.i, 'reserve', null, 0),
-    { w:fw, h:fh, s1:46 / fh, fade:true, dur:720, rot:6, flip: p.bot && where === 'market' }) ];
+    { w:fw, h:fh, s1:46 / fh, fade:true, dur:720, rot:6, flip: p.bot && where === 'market', sfx:'land' }) ];
   if(takesGold) flights.push(fly(chipHTML('gold', '', ''), rectOf(bankChip('gold')), landing(p.i, 'tokens', 'gold', 0),
-    { w:34, h:34, s0:44 / 34, s1:20 / 34, delay:240 }));
+    { w:34, h:34, s0:44 / 34, s1:20 / 34, delay:240, sfx:'gem' }));
   await Promise.all(flights);
   if(S !== live) return;
 
-  if(where === 'market') refill(level, slot);
-  else S.decks[level].pop();
-  p.reserved.push(card);
+  const gotGold = commitReserve(p, card, where === 'deck' ? level : 0);
   let extra = '';
-  if(takesGold && S.bank.gold > 0){
-    S.bank.gold--; p.tokens.gold++; extra = ' and took a gold';
-    UI.pops.push({ i:p.i, row:'tokens', gem:'gold' });
-  }
+  if(gotGold){ extra = ' and took a gold'; UI.pops.push({ i:p.i, row:'tokens', gem:'gold' }); }
   logMsg(p, 'reserved ' + (where === 'market' ? 'the <b>' + card.nm + '</b>' : 'a card from the level ' + ROMAN[level] + ' deck') + extra + '.');
   await endTurn(live);
 }
@@ -987,6 +1222,7 @@ async function endTurn(live){
     S.pending = { kind:'discard' };
     if(p.bot){ await botDiscard(live); return; }
     UI.busy = false; UI.caption = '';
+    saveGame();
     render();
     return;
   }
@@ -996,12 +1232,13 @@ async function endTurn(live){
 async function nobleStep(live){
   if(S !== live) return;
   const p = cur();
-  const ready = S.nobles.filter(nb => GEMS.every(g => p.bonuses[g] >= (nb.req[g]||0)));
+  const ready = readyNobles(p);
   if(ready.length === 1){ await takeNoble(ready[0].id, live); return; }
   if(ready.length > 1){
     if(p.bot){ await takeNoble(botNoble(ready).id, live); return; }
     S.pending = { kind:'noble', ids: ready.map(n => n.id) };
     UI.busy = false; UI.caption = '';
+    saveGame();
     render();
     return;
   }
@@ -1021,10 +1258,9 @@ async function takeNoble(id, live){
     if(src) src.style.visibility = 'hidden';
     const pl = panelOf(p.i);
     await fly(nobleTile(nb, true, false), from, rectOf(pl && pl.querySelector('.pl-head')),
-      { w: from ? from.width : 200, h: from ? from.height : 62, s1:0.55, fade:true, dur:840, arc:70, swell:0.12 });
+      { w: from ? from.width : 200, h: from ? from.height : 62, s1:0.55, fade:true, dur:840, arc:70, swell:0.12, sfx:'noble' });
     if(S !== live) return;
-    S.nobles = S.nobles.filter(n => n.id !== id);
-    p.nobles.push(nb);
+    commitNoble(p, nb);
     UI.pops.push({ i:p.i, row:'nobles' });
     logMsg(p, 'won the favour of <b>' + nb.nm + '</b>, 3 prestige.');
   }
@@ -1045,17 +1281,25 @@ function finishTurn(){
   const next = (S.cur + 1) % S.players.length;
   if(next === 0 && S.endAfterRound){ gameOver(); return; }
   if(next === 0) S.round++;
+  const fromBot = p.bot;
   S.cur = next;
-  UI.pick = []; UI.selCard = null;
+  UI.pick = []; UI.selCard = null; UI.suggest = '';
+  saveGame();
   render();
   if(cur().bot) scheduleBot();
+  else if(fromBot) sfx('turn');                                 /* your move */
 }
 
 function gameOver(){
   S.over = true;
   const best = standings()[0];
   logMsg(null, '<b>' + best.name + '</b> wins with ' + best.points + ' prestige.');
+  dropSave();
+  const humans = S.players.filter(x => !x.bot);
+  if(humans.length === 1 && !S.recorded){ S.recorded = true; recordResult(!best.bot, humans[0]); }
   render();
+  if(!best.bot){ celebrate(); sfx('win'); }
+  else if(humans.length) sfx('lose');
 }
 
 function standings(){
@@ -1105,7 +1349,7 @@ function combos3(list){
   return out;
 }
 
-function botActions(p){
+function botActions(p, jitter){
   const acts = [], need = needVector(p), open = openColors();
   const nearWin = p.points >= WIN - 5;
 
@@ -1165,7 +1409,8 @@ function botActions(p){
     if(cheap) acts.push({ kind:'reserve', where:'market', id:cheap.id, v:0 });
   }
 
-  acts.forEach(a => a.v += Math.random() * 0.18);
+  const noise = jitter === undefined ? 0.18 : jitter;
+  acts.forEach(a => a.v += Math.random() * noise);
   return acts.sort((a,b) => b.v - a.v);
 }
 
@@ -1175,7 +1420,7 @@ async function botMove(){
   if(!S || S.over || S.pending || !cur().bot) return;
   if(UI.busy){ scheduleBot(); return; }
   const live = S, p = cur();
-  const best = botActions(p)[0];
+  const best = botChoose(p);
   if(!best){ logMsg(p, 'passes — nothing legal to do.'); finishTurn(); return; }
   UI.busy = true;
   if(best.kind === 'take'){
@@ -1201,8 +1446,8 @@ function scheduleBot(){
   UI.botTimer = setTimeout(botMove, INSTANT() ? 0 : SPEEDS[UI.speed].think);
 }
 
-async function botDiscard(live){
-  const p = cur(), need = needVector(p);
+function discardChoice(p){
+  const need = needVector(p);
   const left = Object.assign({}, p.tokens), drops = [];
   let h = held(p);
   while(h > HAND_LIMIT){
@@ -1215,18 +1460,114 @@ async function botDiscard(live){
     if(!worst) worst = 'gold';                                    /* gold goes last */
     left[worst]--; drops.push(worst); h--;
   }
+  return drops;
+}
+
+async function botDiscard(live){
+  const p = cur(), drops = discardChoice(p);
   const counts = tally(drops);
   UI.busy = true;
   UI.caption = 'returning ' + gemsInline(counts);
   render();                                                       /* show the over-full purse first */
   await Promise.all(drops.map((g, k) => fly(chipHTML(g, '', ''), landing(p.i, 'tokens', g), rectOf(bankChip(g)),
-    { w:30, h:30, s0:20 / 30, s1:44 / 30, delay:k * 90, dur:520 })));
+    { w:30, h:30, s0:20 / 30, s1:44 / 30, delay:k * 90, dur:520, sfx:'gem' })));
   if(S !== live) return;
   drops.forEach(g => { p.tokens[g]--; S.bank[g]++; });
   Object.keys(counts).forEach(g => UI.bankPops.push(g));
   logMsg(p, 'returned ' + gemsInline(counts) + ' to the bank.');
   S.pending = null;
   await nobleStep(live);
+}
+
+/* ── skill levels ───────────────────────────────────────── */
+const SKILLS = {
+  gentle:   { label:'Gentle',   note:'Loose play, rarely blocks you' },
+  shrewd:   { label:'Shrewd',   note:'A solid, greedy merchant' },
+  ruthless: { label:'Ruthless', note:'Plans three turns ahead and blocks' }
+};
+
+function botChoose(p){
+  const skill = p.skill || S.skill || 'shrewd';
+  if(skill === 'gentle'){
+    /* a relaxed merchant: sometimes browses instead of buying, buys whatever
+       catches its eye, and rarely reserves to block you */
+    const acts = botActions(p, 2.4).filter(a => a.kind !== 'reserve' || Math.random() < 0.25);
+    const takes = acts.filter(a => a.kind === 'take'), buys = acts.filter(a => a.kind === 'buy');
+    if(takes.length && Math.random() < 0.12) return takes[rnd(Math.min(3, takes.length))];
+    if(buys.length && Math.random() < 0.4) return buys[rnd(buys.length)];
+    return acts[0] || botActions(p)[0];
+  }
+  const acts = botActions(p);
+  return skill === 'ruthless' ? (ruthlessPick(p, acts) || acts[0]) : acts[0];
+}
+
+/* Ruthless plays each promising move forward three of its own turns on a copy
+   of the table (refills come up empty, so it never peeks at the decks), keeps
+   the line that scores soonest, and leans hard on blocking a rival's big card. */
+function ruthlessPick(p, acts){
+  const rivals = S.players.filter(o => o !== p);
+  const threat = c => rivals.some(o => canBuy(o, c) && (o.points + c.points >= WIN || c.points >= 4));
+  let best = null, bv = -Infinity;
+  for(const a of acts.slice(0, 9)){
+    if(a.kind === 'reserve' && a.where === 'deck') continue;
+    let v = rollout(p.i, a, 3);
+    const card = a.kind !== 'take' ? marketCards().concat(p.reserved).find(c => c.id === a.id) : null;
+    if(card && threat(card)) v += a.kind === 'buy' ? 12 : 9;
+    if(v > bv){ bv = v; best = a; }
+  }
+  return best;
+}
+
+function simApply(p, a){
+  const find = id => marketCards().find(c => c.id === id) || p.reserved.find(c => c.id === id) || null;
+  if(a.kind === 'take') commitTake(p, a.pick);
+  else if(a.kind === 'buy'){
+    const card = find(a.id), pay = card && priceFor(p, card);
+    if(pay) commitBuy(p, card, pay);
+  } else if(a.kind === 'reserve' && a.where === 'market'){
+    const card = find(a.id);
+    if(card && p.reserved.length < RESERVE_LIMIT) commitReserve(p, card, 0);
+  }
+  if(held(p) > HAND_LIMIT) discardChoice(p).forEach(g => { p.tokens[g]--; S.bank[g]++; });
+  const ready = readyNobles(p);
+  if(ready.length) commitNoble(p, botNoble(ready));
+  p.points = score(p);
+}
+
+function rollout(pi, first, depth){
+  const real = S;
+  S = JSON.parse(JSON.stringify(real));
+  S.sim = true;
+  try{
+    const p = S.players[pi];
+    let gained = 0;
+    const step = (a, t) => {
+      const before = p.points;
+      simApply(p, a);
+      gained += (p.points - before) * (1 - t * 0.15);           /* sooner is worth more */
+    };
+    step(first, 0);
+    if(p.points >= WIN) return 1e6;
+    for(let t = 1; t <= depth && p.points < WIN; t++){
+      const a = botActions(p, 0).find(x => !(x.kind === 'reserve' && x.where === 'deck'));
+      if(!a) break;
+      step(a, t);
+    }
+    return gained * 3 + positionValue(p);
+  } finally {
+    S = real;
+  }
+}
+
+function positionValue(p){
+  const bonus = GEMS.reduce((s, g) => s + p.bonuses[g], 0);
+  const gems = GEMS.reduce((s, g) => s + p.tokens[g], 0);
+  let court = 0;
+  for(const nb of S.nobles){
+    const gap = GEMS.reduce((s, g) => s + Math.max(0, (nb.req[g]||0) - p.bonuses[g]), 0);
+    court += 3 / (1 + gap);
+  }
+  return p.points + bonus * 0.9 + court * 0.6 + gems * 0.12 + p.tokens.gold * 0.25 - p.reserved.length * 0.25;
 }
 
 function botNoble(options){
@@ -1267,8 +1608,9 @@ function render(){
   if(!S) return;
   $('setup').hidden = true;
   $('table').hidden = false;
-  $('brand-sub').textContent = 'Round ' + S.round + ' · first to ' + WIN + ' prestige';
-  renderTurnbar(); renderNobles(); renderRows(); renderBank(); renderTray(); renderPlayers(); renderLog();
+  const sk = SKILLS[S.skill] || SKILLS.shrewd;
+  $('brand-sub').textContent = 'Round ' + S.round + (S.players.some(x => x.bot) ? ' · ' + sk.label + ' bots' : '') + ' · first to ' + WIN;
+  renderTurnbar(); renderNobles(); renderRows(); renderBank(); renderTray(); renderPurse(); renderPlayers(); renderLog();
   $('discard-modal').hidden = !(S.pending && S.pending.kind === 'discard' && !cur().bot);
   if(!$('discard-modal').hidden) renderDiscard();
   $('noble-modal').hidden = !(S.pending && S.pending.kind === 'noble' && !cur().bot);
@@ -1286,15 +1628,18 @@ function renderTurnbar(){
     /* captions are status phrases ("buying the …") so they read after any name */
     who = esc(p.name) + (p.bot ? '' : ' — your turn');
     hint = UI.caption ? UI.caption
+         : UI.suggest && canAct() ? UI.suggest
          : p.bot ? 'Weighing the table…'
          : S.pending && S.pending.kind === 'discard' ? 'Return gems down to ' + HAND_LIMIT + '.'
          : S.pending ? 'A noble is waiting on your answer.'
          : 'Take gems from the bank, or pick a card to buy or reserve.';
   }
   const thinking = !S.over && (p.bot || UI.busy);
+  const idle = !S.over && !p.bot && !UI.caption && !(UI.suggest && canAct()) && !S.pending;
   $('turnbar').innerHTML =
     '<span class="who"><span class="pip' + (thinking ? ' thinking' : '') + '"></span>' + who + '</span>' +
-    '<span class="hint">' + hint + '</span><span class="spacer"></span>' +
+    '<span class="hint' + (idle ? ' idle' : '') + '">' + hint + '</span><span class="spacer"></span>' +
+    (canAct() ? '<button type="button" class="btn sm" data-suggest title="Suggest a good move">Hint</button>' : '') +
     (S.endAfterRound && !S.over ? '<span class="badge">Final round</span>' : '') +
     '<span class="hint tnum">' + p.points + ' / ' + WIN + ' prestige</span>';
   schedulePost();
@@ -1322,7 +1667,8 @@ function cardInner(card, miss){
   ).join('');
   return '<span class="crown"><span class="pts' + (card.points ? '' : ' zero') + '">' + (card.points || '·') + '</span>' +
     chipHTML(card.gem, '', 'sm') + '</span>' +
-    '<span class="face"><span class="mine">' + esc(card.nm) + '</span></span>' +
+    '<span class="face"><span class="mine">' + esc(card.nm) + '</span>' +
+    '<svg class="motif" aria-hidden="true" focusable="false"><use href="#cut-' + card.level + '"/></svg></span>' +
     '<span class="costs">' + costs + '</span>';
 }
 function cardFace(card){ return '<div class="card" data-gem="' + card.gem + '">' + cardInner(card, null) + '</div>'; }
@@ -1383,7 +1729,7 @@ function renderBank(){
     const note = picked ? ' · ' + picked + ' picked' : wanted > 1 ? ' · takes 2' : '';
     return '<button type="button" class="tokbtn' + (picked ? ' picked' : '') + (wanted ? ' intent' : '') + (dim ? ' dim' : '') +
       '" data-token="' + g + '" ' + (usable ? '' : 'disabled') + ' title="' + title + '">' +
-      chipHTML(g, '', 'lg') + '<span class="n tnum">' + S.bank[g] + note + '</span></button>';
+      chipHTML(g, '', 'lg') + '<span class="n tnum">' + S.bank[g] + (note ? '<span class="nn">' + note + '</span>' : '') + '</span></button>';
   }).join('');
 }
 
@@ -1416,7 +1762,7 @@ function renderPlayers(){
       if(!open) return '<span class="minicard back' + (UI.intent && UI.intent.card === c.id ? ' intent' : '') +
         '" data-hid="' + c.id + '" title="Reserved, held face down"></span>';
       const buy = p === cur() && canAct() && canBuy(p, c);
-      return '<button type="button" class="minicard' + (buy ? ' buyable' : '') + '" data-res="' + c.id +
+      return '<button type="button" class="minicard' + (buy ? ' buyable' : '') + (UI.intent && UI.intent.card === c.id ? ' intent' : '') + '" data-res="' + c.id +
         '" ' + (buy ? '' : 'disabled') + ' title="' + esc(c.nm) + (buy ? ': buy it' : ': not yet affordable') + '">' +
         '<span class="mc-top"><span class="mc-p">' + (c.points || '·') + '</span>' + chipHTML(c.gem, '', 'xs') + '</span>' +
         '<span class="mc-cost">' + GEMS.filter(g => c.cost[g]).map(g => chipHTML(g, c.cost[g], 'xs')).join('') + '</span></button>';
@@ -1432,6 +1778,24 @@ function renderPlayers(){
       '<div class="pl-res" data-row="reserve">' + res + '</div>' +
       '</div>';
   }).join('');
+}
+
+/* phones: your purse rides in the dock under the bank */
+function renderPurse(){
+  const el = $('mypurse');
+  const humans = S.players.filter(x => !x.bot);
+  const me = humans.length === 1 ? humans[0] : (!cur().bot ? cur() : null);
+  if(!me){ el.innerHTML = ''; delete el.dataset.pl; return; }
+  el.dataset.pl = me.i;
+  const stack = (g, n) => '<span class="stack" data-stack="' + g + '">' + chipHTML(g, '', 'sm flat') + '<b>' + n + '</b></span>';
+  const toks = GEMS.concat('gold').filter(g => me.tokens[g]).map(g => stack(g, me.tokens[g])).join('') || '<span class="none">none yet</span>';
+  const bons = GEMS.filter(g => me.bonuses[g]).map(g => stack(g, me.bonuses[g])).join('') || '<span class="none">none yet</span>';
+  el.innerHTML =
+    '<span class="mp-who"><b>' + esc(me.name) + '</b><span class="tnum">' + me.points + ' pp</span></span>' +
+    (me.reserved.length ? '<button type="button" class="mp-res" data-row="reserve" data-jump="' + me.i + '">Reserved ' + me.reserved.length + '/' + RESERVE_LIMIT + '</button>'
+                        : '<span data-row="reserve"></span>') +
+    '<span class="mp-row"><span class="mp-k">Gems ' + held(me) + '/' + HAND_LIMIT + '</span><span class="mp-stacks" data-row="tokens">' + toks + '</span></span>' +
+    '<span class="mp-row"><span class="mp-k">Cards</span><span class="mp-stacks" data-row="bonus">' + bons + '</span></span>';
 }
 
 function renderLog(){
@@ -1464,11 +1828,40 @@ function renderOver(){
     '<span class="nm">' + esc(p.name) + (p.bot ? '' : ' (you)') + '</span>' +
     '<span class="de">' + p.cards.length + ' cards · ' + p.nobles.length + ' nobles</span>' +
     '<span class="sc tnum">' + p.points + '</span></div>').join('');
+  $('ov-record').textContent = recordLine();
 }
 
 /* ═══════════════════════════════════════════════════════════
    Events
    ═══════════════════════════════════════════════════════════ */
+$('turnbar').addEventListener('click', e => {
+  if(!e.target.closest('[data-suggest]') || !canAct()) return;
+  const me = cur(), acts = botActions(me, 0);
+  const best = ruthlessPick(me, acts) || acts[0];
+  if(!best) return;
+  UI.pick = []; UI.selCard = null; UI.intent = null;
+  if(best.kind === 'take'){
+    UI.pick = best.pick.slice();
+    UI.suggest = 'Hint: take ' + gemsInline(tally(best.pick)) + ', then tap Take.';
+  } else if(best.where === 'reserved'){
+    UI.intent = { card: best.id };
+    UI.suggest = 'Hint: buy the <b>' + esc(best.label) + '</b> from your reserve.';
+  } else if(best.where === 'deck'){
+    UI.intent = { deck: best.id };
+    UI.suggest = 'Hint: reserve blind from the level ' + ROMAN[best.id] + ' deck.';
+  } else {
+    UI.selCard = { id: best.id, where:'market' };
+    UI.suggest = 'Hint: ' + (best.kind === 'buy' ? 'buy' : 'reserve') + ' the <b>' + esc(best.label) + '</b>.';
+  }
+  render();
+});
+
+$('mypurse').addEventListener('click', e => {
+  const b = e.target.closest('[data-jump]');
+  const pl = b && panelOf(Number(b.dataset.jump));
+  if(pl) pl.scrollIntoView({ behavior: F() ? 'smooth' : 'auto', block:'center' });
+});
+
 $('rows').addEventListener('click', e => {
   if(UI.busy) return;
   const act = e.target.closest('[data-do]');
@@ -1484,7 +1877,7 @@ $('rows').addEventListener('click', e => {
   if(card){
     const id = card.dataset.card;
     UI.selCard = (UI.selCard && UI.selCard.id === id) ? null : { id, where: card.dataset.where };
-    UI.pick = [];
+    UI.pick = []; UI.suggest = ''; UI.intent = null;
     render();
   }
 });
@@ -1494,8 +1887,9 @@ $('bank').addEventListener('click', e => {
   if(!b || b.disabled || !canAct()) return;
   const from = rectOf(b.querySelector('.chip'));
   UI.pick.push(b.dataset.token);
-  UI.selCard = null;
+  UI.selCard = null; UI.suggest = ''; UI.intent = null;
   render();
+  sfx('pick');
   const chips = document.querySelectorAll('#tray [data-unpick] .chip');
   flipFrom(chips[UI.pick.length - 1], from);                     /* hop from the pile into the tray */
 });
@@ -1508,12 +1902,12 @@ $('tray').addEventListener('click', e => {
     const from = rectOf(un.querySelector('.chip'));
     UI.pick.splice(k, 1);
     render();
-    fly(chipHTML(g, '', ''), from, rectOf(bankChip(g)), { w:34, h:34, s1:44 / 34, dur:380, arc:30 });
+    fly(chipHTML(g, '', ''), from, rectOf(bankChip(g)), { w:34, h:34, s1:44 / 34, dur:380, arc:30, sfx:'pick' });
     return;
   }
   const b = e.target.closest('[data-tray]');
   if(!b || b.disabled) return;
-  if(b.dataset.tray === 'clear'){ UI.pick = []; render(); return; }
+  if(b.dataset.tray === 'clear'){ UI.pick = []; UI.suggest = ''; render(); return; }
   actTake(UI.pick.slice(), 'tray');
 });
 
@@ -1563,11 +1957,12 @@ $('btn-new').addEventListener('click', () => {
   $('table').hidden = true; $('setup').hidden = false;
   $('over-modal').hidden = true; $('discard-modal').hidden = true; $('noble-modal').hidden = true;
   $('brand-sub').textContent = 'Renaissance gem merchants · first to ' + WIN + ' prestige';
+  renderSetup();
 });
 $('btn-over-review').addEventListener('click', () => { $('over-modal').hidden = true; });
 $('btn-over-again').addEventListener('click', () => {
   const seats = S.players.map(p => ({ name:p.name, bot:p.bot }));
-  newGame(seats); render(); if(cur().bot) scheduleBot();
+  newGame(seats, S.skill); render(); if(cur().bot) scheduleBot();
 });
 
 /* ═══════════════════════════════════════════════════════════
@@ -1583,12 +1978,14 @@ function loadPrefs(){
       const o = JSON.parse(raw);
       if(Array.isArray(o.seats) && o.seats.length >= 2 && o.seats.length <= 4) setupSeats = o.seats;
       if(o.speed && SPEEDS[o.speed]) UI.speed = o.speed;
+      if(o.skill && SKILLS[o.skill]) UI.skill = o.skill;
+      if(typeof o.sound === 'boolean') UI.sound = o.sound;
     }
   }catch(err){ /* storage unavailable — defaults are fine */ }
   if(!setupSeats.length) setSeatCount(3);
 }
 function savePrefs(){
-  try{ localStorage.setItem('splendor.prefs', JSON.stringify({ seats:setupSeats, speed:UI.speed })); }
+  try{ localStorage.setItem('splendor.prefs', JSON.stringify({ seats:setupSeats, speed:UI.speed, skill:UI.skill, sound:UI.sound })); }
   catch(err){ /* ignore */ }
 }
 function setSeatCount(n){
@@ -1610,7 +2007,30 @@ function renderSetup(){
   $('speed-seg').querySelectorAll('button').forEach(b =>
     b.setAttribute('aria-pressed', String(b.dataset.speed === UI.speed)));
   $('btn-pace').textContent = SPEEDS[UI.speed].label + ' pace';
+  $('skill-seg').querySelectorAll('button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.skill === UI.skill)));
+  $('skill-note').textContent = SKILLS[UI.skill].note + '.';
+  $('btn-sound').textContent = UI.sound ? 'Sound on' : 'Sound off';
+  $('btn-sound').setAttribute('aria-pressed', String(UI.sound));
+  const saved = !S && loadSave();
+  $('btn-resume').hidden = !saved;
+  if(saved) $('btn-resume').textContent = 'Resume round ' + saved.round;
+  const rec = recordLine();
+  $('setup-record').hidden = !rec;
+  $('setup-record').textContent = rec;
 }
+$('skill-seg').addEventListener('click', e => {
+  const b = e.target.closest('[data-skill]'); if(!b) return;
+  UI.skill = b.dataset.skill; savePrefs(); renderSetup();
+});
+$('btn-sound').addEventListener('click', () => {
+  UI.sound = !UI.sound; savePrefs(); renderSetup();
+  if(UI.sound) sfx('pick');
+});
+$('btn-resume').addEventListener('click', () => {
+  const saved = loadSave();
+  if(saved) restore(saved, 'Picked up where you left off.');
+});
 $('count-seg').addEventListener('click', e => {
   const b = e.target.closest('[data-n]'); if(!b) return;
   syncNames(); setSeatCount(Number(b.dataset.n)); renderSetup();
@@ -1636,7 +2056,7 @@ function syncNames(){
 }
 $('btn-start').addEventListener('click', () => {
   syncNames(); savePrefs();
-  newGame(setupSeats.map(s => ({ name:s.name, bot:s.bot })));
+  newGame(setupSeats.map(s => ({ name:s.name, bot:s.bot })), UI.skill);
   render();
   if(cur().bot) scheduleBot();
 });
@@ -1648,17 +2068,21 @@ function start(data){
   loadPrefs();
   if(data && data.speed && SPEEDS[data.speed]) UI.speed = data.speed;
   renderSetup();
-  if(data && data.S){
-    S = data.S;
-    resetUI();
-    UI.seen = new Set(marketCards().map(c => c.id));
-    S.players.forEach(p => UI.lastPts[p.i] = p.points);
-    UI.lastCur = S.cur;
-    render();
-    if(!S.over && cur().bot){
-      if(S.pending && S.pending.kind === 'discard') botDiscard(S);
-      else if(!S.pending) scheduleBot();
-    }
+  const live = data && data.S;
+  const state = live ? data.S : loadSave();                        /* republish, else a saved game */
+  if(state) restore(state, live ? '' : 'Picked up where you left off.');
+}
+function restore(state, note){
+  S = state;
+  resetUI();
+  UI.seen = new Set(marketCards().map(c => c.id));
+  S.players.forEach(p => UI.lastPts[p.i] = p.points);
+  UI.lastCur = S.cur;
+  if(note) logMsg(null, note);
+  render();
+  if(!S.over && cur().bot){
+    if(S.pending && S.pending.kind === 'discard') botDiscard(S);
+    else if(!S.pending) scheduleBot();
   }
 }
 if(window.claude && window.claude.hot){
